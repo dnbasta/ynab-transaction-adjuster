@@ -1,6 +1,6 @@
-# ynab-memo-parser
+# ynab-transaction-adjuster
 
-[![GitHub Release](https://img.shields.io/github/release/dnbasta/ynab-memo-parser?style=flat)]() 
+[![GitHub Release](https://img.shields.io/github/release/dnbasta/ynab-transaction-adjuster?style=flat)]() 
 [![Github Release](https://img.shields.io/maintenance/yes/2100)]()
 
 This library helps you to automatically adjust transactions in YNAB based on your logic. It allows you to implement 
@@ -64,7 +64,7 @@ get adjusted, filter them before handing the list over to the `adjust()` method.
 of `ModifiedTransaction` objects which can be inspected for the changed properties.
 
 ```py
-transations = ynab_transactions_adjuster.fetch()
+transations = ynab_transaction_adjuster.fetch()
 # optionally filter transactions before passing them to method below
 mod_transactions = ynab_transaction_adjuster.adjust(transactions=transactions,
 													factory_class=MyAdjusterFactory)
