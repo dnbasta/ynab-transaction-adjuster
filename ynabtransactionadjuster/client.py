@@ -3,9 +3,9 @@ from typing import List
 import requests
 from requests import HTTPError
 
-from ynabmemoparser.models import CategoryGroup, ModifiedTransaction
-from ynabmemoparser.models import OriginalTransaction
-from ynabmemoparser.models import Payee
+from ynabtransactionadjuster.models import CategoryGroup, ModifiedTransaction
+from ynabtransactionadjuster.models import OriginalTransaction
+from ynabtransactionadjuster.models import Payee
 
 
 YNAB_BASE_URL = 'https://api.ynab.com/v1'

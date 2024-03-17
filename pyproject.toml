@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "ynab-memo-parser"
+name = "ynab-transaction-adjuster"
 version = "0.0.0"
-description = "Library to parse & update memo and/or payee information in YNAB transactions"
+description = "Library to automatically adjust transactions in YNAB based on your logic in simple factory class"
 authors = ["Daniel Basta <ynab@basta.info>"]
 readme = "README.md"
 license = 'MIT'
-packages = [{include = 'ynabmemoparser'}]
+packages = [{include = 'ynabtransactionadjuster'}]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",

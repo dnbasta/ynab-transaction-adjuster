@@ -2,8 +2,8 @@ from unittest.mock import MagicMock, patch
 
 from requests import Response
 
-from ynabmemoparser.client import Client
-from ynabmemoparser.models.payee import Payee
+from ynabtransactionadjuster.client import Client
+from ynabtransactionadjuster.models.payee import Payee
 
 
 @patch('ynabmemoparser.client.requests.get')

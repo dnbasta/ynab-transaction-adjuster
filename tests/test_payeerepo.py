@@ -1,8 +1,8 @@
 import pytest
 
-from ynabmemoparser.exceptions import NoMatchingPayeeError
-from ynabmemoparser.models.payee import Payee
-from ynabmemoparser.repos.payeerepo import PayeeRepo
+from ynabtransactionadjuster.exceptions import NoMatchingPayeeError
+from ynabtransactionadjuster.models.payee import Payee
+from ynabtransactionadjuster.repos.payeerepo import PayeeRepo
 
 
 @pytest.fixture

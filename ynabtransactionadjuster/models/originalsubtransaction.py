@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from ynabmemoparser.models.category import Category
-from ynabmemoparser.models.payee import Payee
+from ynabtransactionadjuster.models.category import Category
+from ynabtransactionadjuster.models.payee import Payee
 
 
 @dataclass(frozen=True)

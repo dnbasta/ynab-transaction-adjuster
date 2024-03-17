@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import pytest
 from pydantic import ValidationError
 
-from ynabmemoparser.models import OriginalTransaction, Category, Payee, TransactionModifier, ModifiedTransaction, OriginalSubTransaction, SubTransaction
+from ynabtransactionadjuster.models import OriginalTransaction, Category, Payee, TransactionModifier, ModifiedTransaction, OriginalSubTransaction, SubTransaction
 
 
 @pytest.mark.parametrize('test_attribute, test_input', [

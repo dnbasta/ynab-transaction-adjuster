@@ -21,5 +21,7 @@ class ExistingSubTransactionError(Exception):
 	pass
 
 
-class ParserError(Exception):
+class FactoryError(Exception):
+	"""Raised when an error occurs while running the factory on a transaction or during validation of the returned
+	results of the run"""
 	pass

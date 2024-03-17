@@ -1,7 +1,7 @@
 from typing import List
 
-from ynabmemoparser.exceptions import NoMatchingPayeeError
-from ynabmemoparser.models import Payee
+from ynabtransactionadjuster.exceptions import NoMatchingPayeeError
+from ynabtransactionadjuster.models import Payee
 
 
 class PayeeRepo:

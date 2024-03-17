@@ -1,12 +1,12 @@
 # Reference
 
 
-::: ynabmemoparser.YnabMemoParser
+::: ynabtransactionadjuster.YnabTransactionAdjuster
     options:
         merge_init_into_class: true
         show_root_full_path: false
 
-::: parser.Parser
+::: adjusterfactory.AdjusterFactory
     options:
         show_root_full_path: false
 

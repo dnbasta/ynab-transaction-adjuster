@@ -1,17 +1,17 @@
 from typing import List, Type
 
-from ynabmemoparser.client import Client
-from ynabmemoparser.exceptions import ParserError
-from ynabmemoparser.models import OriginalTransaction, ModifiedTransaction
-from ynabmemoparser.parser import Parser
-from ynabmemoparser.models import TransactionModifier
-from ynabmemoparser.repos import CategoryRepo
-from ynabmemoparser.repos import PayeeRepo
+from ynabtransactionadjuster.client import Client
+from ynabtransactionadjuster.exceptions import FactoryError
+from ynabtransactionadjuster.models import OriginalTransaction, ModifiedTransaction
+from ynabtransactionadjuster.adjusterfactory import AdjusterFactory
+from ynabtransactionadjuster.models import TransactionModifier
+from ynabtransactionadjuster.repos import CategoryRepo
+from ynabtransactionadjuster.repos import PayeeRepo
 
 YNAB_BASE_URL = 'https://api.youneedabudget.com/v1'
 
 
-class YnabMemoParser:
+class YnabTransactionAdjuster:
 	"""The primary class object of the library. It takes all configuration input and contains functions to fetch,
 	parse and update transactions
 
@@ -30,48 +30,48 @@ class YnabMemoParser:
 		self.categories: CategoryRepo = CategoryRepo(self._client.fetch_categories())
 		self.payees: PayeeRepo = PayeeRepo(self._client.fetch_payees())
 
-	def fetch_transactions(self) -> List[OriginalTransaction]:
+	def fetch(self) -> List[OriginalTransaction]:
 		"""
 		Fetches all transactions from YNAB account
 		:returns: list of original YNAB transactions
 		"""
 		return self._client.fetch_transactions()
 
-	def parse_transactions(self, transactions: List[OriginalTransaction],
-						   parser_class: Type[Parser],
-						   return_only_changed: bool = True) -> List[ModifiedTransaction]:
+	def adjust(self, transactions: List[OriginalTransaction],
+			   factory_class: Type[AdjusterFactory],
+			   return_only_changed: bool = True) -> List[ModifiedTransaction]:
 		"""Parses original transactions with provided parser class. The method checks for allowed changes
 		and returns a list of the modified transactions
 
 		:param transactions: list of original transactions from YNAB
-		:param parser_class: The Parser child class to use
+		:param factory_class: The AdjusterFactory child class to use
 		:param return_only_changed: If set to False returns all transactions no matter whether they were changed or not
 		:return: list of modified transactions
 
 		:raises ParserError: if there is an error in parsing a transaction either during the parsing itself or upon
 		validating the result
 		"""
-		parser = parser_class(categories=self.categories, payees=self.payees)
-		modified_transactions = [self._parse_single_transaction(original=t, parser=parser) for t in transactions]
+		factory = factory_class(categories=self.categories, payees=self.payees)
+		modified_transactions = [self._adjust_single_transaction(original=t, factory=factory) for t in transactions]
 		if return_only_changed:
 			modified_transactions = [t for t in modified_transactions if t.is_changed()]
 		return modified_transactions
 
-	def _parse_single_transaction(self, original: OriginalTransaction, parser: Parser) -> ModifiedTransaction:
+	def _adjust_single_transaction(self, original: OriginalTransaction, factory: AdjusterFactory) -> ModifiedTransaction:
 		modifier = TransactionModifier.from_original_transaction(original_transaction=original)
 		try:
-			modifier_return = parser.parse(original=original, modifier=modifier)
+			modifier_return = factory.run(original=original, modifier=modifier)
 			if not isinstance(modifier_return, TransactionModifier):
-				raise ParserError(f"Parser {parser.__class__.__name__} doesn't return TransactionModifier object")
+				raise FactoryError(f"Parser {factory.__class__.__name__} doesn't return TransactionModifier object")
 			TransactionModifier.model_validate(modifier_return.__dict__)
 			self.categories.fetch_by_id(modifier_return.category.id)
 			modified_transaction = ModifiedTransaction(original_transaction=original,
 													 transaction_modifier=modifier_return)
 			return modified_transaction
 		except Exception as e:
-			raise ParserError(f"Error while parsing {original.as_dict()} with {parser.__class__.__name__}") from e
+			raise FactoryError(f"Error while parsing {original.as_dict()} with {factory.__class__.__name__}") from e
 
-	def update_transactions(self, transactions: List[ModifiedTransaction]) -> int:
+	def update(self, transactions: List[ModifiedTransaction]) -> int:
 		"""Takes a list of modified transactions and updates the respective transactions in YNAB
 
 		:param transactions: List of modified transactions to update in YNAB

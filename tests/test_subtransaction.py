@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from ynabmemoparser.models import SubTransaction, Category, Payee
+from ynabtransactionadjuster.models import SubTransaction, Category, Payee
 
 @pytest.fixture
 def mock_category():

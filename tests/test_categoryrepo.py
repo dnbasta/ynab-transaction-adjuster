@@ -1,9 +1,9 @@
 import pytest
 
-from ynabmemoparser.exceptions import NoMatchingCategoryError, MultipleMatchingCategoriesError
-from ynabmemoparser.models import CategoryGroup
-from ynabmemoparser.models.category import Category
-from ynabmemoparser.repos.categoryrepo import CategoryRepo
+from ynabtransactionadjuster.exceptions import NoMatchingCategoryError, MultipleMatchingCategoriesError
+from ynabtransactionadjuster.models import CategoryGroup
+from ynabtransactionadjuster.models.category import Category
+from ynabtransactionadjuster.repos.categoryrepo import CategoryRepo
 
 
 def test_fetch_by_name_success(mock_category_repo):

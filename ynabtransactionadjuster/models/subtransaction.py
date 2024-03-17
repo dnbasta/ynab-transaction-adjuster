@@ -2,8 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel, model_validator
 
-from ynabmemoparser.models.category import Category
-from ynabmemoparser.models.payee import Payee
+from ynabtransactionadjuster.models.category import Category
+from ynabtransactionadjuster.models.payee import Payee
 
 
 class SubTransaction(BaseModel):

@@ -3,9 +3,9 @@ from unittest.mock import patch
 
 import pytest
 
-from ynabmemoparser import YnabMemoParser
-from ynabmemoparser.models import OriginalTransaction, Category, Payee, OriginalSubTransaction, SubTransaction, CategoryGroup
-from ynabmemoparser.repos import CategoryRepo
+from ynabtransactionadjuster import YnabTransactionAdjuster
+from ynabtransactionadjuster.models import OriginalTransaction, Category, Payee, OriginalSubTransaction, SubTransaction, CategoryGroup
+from ynabtransactionadjuster.repos import CategoryRepo
 
 
 @pytest.fixture
@@ -51,6 +51,6 @@ def mock_category_repo():
 @pytest.fixture
 @patch('ynabmemoparser.ynabmemoparser.Client')
 def mock_memo_parser(mock_client, mock_category_repo):
-	ymp = YnabMemoParser(budget='budget', account='account', token='token')
+	ymp = YnabTransactionAdjuster(budget='budget', account='account', token='token')
 	ymp.categories = mock_category_repo
 	return ymp

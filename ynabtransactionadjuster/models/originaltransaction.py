@@ -2,9 +2,9 @@ from dataclasses import dataclass, asdict
 from datetime import date, datetime
 from typing import Literal, FrozenSet
 
-from ynabmemoparser.models.category import Category
-from ynabmemoparser.models.payee import Payee
-from ynabmemoparser.models.originalsubtransaction import OriginalSubTransaction
+from ynabtransactionadjuster.models.category import Category
+from ynabtransactionadjuster.models.payee import Payee
+from ynabtransactionadjuster.models.originalsubtransaction import OriginalSubTransaction
 
 
 @dataclass(frozen=True)

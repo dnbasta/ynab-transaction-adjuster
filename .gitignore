@@ -6,6 +6,7 @@ build/
 # Environments
 .env
 .venv
+site/
 env/
 venv/
 ENV/

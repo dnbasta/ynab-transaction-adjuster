@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from ynabmemoparser.models import Category
+from ynabtransactionadjuster.models import Category
 
 
 def test_category_success():

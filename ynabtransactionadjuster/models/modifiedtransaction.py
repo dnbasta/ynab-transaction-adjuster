@@ -2,8 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, model_validator
 
-from ynabmemoparser.models.originaltransaction import OriginalTransaction
-from ynabmemoparser.models.transactionmodifier import TransactionModifier
+from ynabtransactionadjuster.models.originaltransaction import OriginalTransaction
+from ynabtransactionadjuster.models.transactionmodifier import TransactionModifier
 
 
 class ModifiedTransaction(BaseModel):

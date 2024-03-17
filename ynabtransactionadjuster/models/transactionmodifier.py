@@ -2,10 +2,10 @@ from pydantic import BaseModel, model_validator
 from datetime import date
 from typing import List, Literal, Optional
 
-from ynabmemoparser.models.category import Category
-from ynabmemoparser.models.originaltransaction import OriginalTransaction
-from ynabmemoparser.models.subtransaction import SubTransaction
-from ynabmemoparser.models.payee import Payee
+from ynabtransactionadjuster.models.category import Category
+from ynabtransactionadjuster.models.originaltransaction import OriginalTransaction
+from ynabtransactionadjuster.models.subtransaction import SubTransaction
+from ynabtransactionadjuster.models.payee import Payee
 
 
 class TransactionModifier(BaseModel):

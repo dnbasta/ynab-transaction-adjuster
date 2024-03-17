@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from ynabmemoparser.models import Payee
+from ynabtransactionadjuster.models import Payee
 
 
 def test_payee_success():

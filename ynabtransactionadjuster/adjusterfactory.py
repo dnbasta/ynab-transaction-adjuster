@@ -1,13 +1,13 @@
 from abc import abstractmethod
 
-from ynabmemoparser.models import TransactionModifier, OriginalTransaction
-from ynabmemoparser.repos import CategoryRepo
-from ynabmemoparser.repos import PayeeRepo
+from ynabtransactionadjuster.models import TransactionModifier, OriginalTransaction
+from ynabtransactionadjuster.repos import CategoryRepo
+from ynabtransactionadjuster.repos import PayeeRepo
 
 
-class Parser:
+class AdjusterFactory:
 	"""Abstract class which modifies transactions according to concrete implementation. You need to create your own
-	child class and implement the parse method in it according to your needs. It has attributes which allow you to
+	child class and implement the run method in it according to your needs. It has attributes which allow you to
 	lookup categories and payees from your budget.
 
 	:ivar categories: Collection of current categories in YNAB budget
@@ -18,7 +18,7 @@ class Parser:
 		self.payees: PayeeRepo = payees
 
 	@abstractmethod
-	def parse(self, original: OriginalTransaction, modifier: TransactionModifier) -> TransactionModifier:
+	def run(self, original: OriginalTransaction, modifier: TransactionModifier) -> TransactionModifier:
 		"""Function which implements the actual modification of a transaction. It is initiated and called by the library
 		for all transactions provided in the parse_transaction method of the main class.
 

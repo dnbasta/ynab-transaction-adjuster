@@ -1,8 +1,8 @@
 from typing import List, Dict
 
-from ynabmemoparser.exceptions import NoMatchingCategoryError, MultipleMatchingCategoriesError
-from ynabmemoparser.models import CategoryGroup
-from ynabmemoparser.models import Category
+from ynabtransactionadjuster.exceptions import NoMatchingCategoryError, MultipleMatchingCategoriesError
+from ynabtransactionadjuster.models import CategoryGroup
+from ynabtransactionadjuster.models import Category
 
 
 class CategoryRepo:

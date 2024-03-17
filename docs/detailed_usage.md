@@ -5,27 +5,33 @@ instance attached which can be used in the parser via `self.categories`. The rep
 `fetch_by_name()` or `fetch_by_id()` method to fetch a valid category. Using the repo is recommended to ensure you only
 assign valid categories to the modifier. The library doesn't allow creating new categories and specifying a 
 non-existing category will raise an error.
+
 ```py
-from ynabmemoparser import Parser
+from ynabtransactionadjuster import AdjusterFactory
 
-class MyParser(Parser):
 
-    def parse(self, original, modifier):
-        my_category = self.categories.fetch_by_name('my_category')
-        # or alternatively
-        my_category = self.categories.fetch_by_id('category_id')
-        modifier.category = my_category
-        
-        return modifier
+class MyAdjusterFactory(AdjusterFactory):
+
+	def run(self, original, modifier):
+		my_category = self.categories.fetch_by_name('my_category')
+		# or alternatively
+		my_category = self.categories.fetch_by_id('category_id')
+		modifier.category = my_category
+
+		return modifier
 ```
 The [`CategoryRepo`][repos.CategoryRepo] instance gets build when the library get initialized and can also be accessed 
-from the main instance (e.g. for finding category ids to be used in the parser later). 
+from the main instance (e.g. for finding category ids to be used in the parser later).
 
 ```py
-from ynabmemoparser import YnabMemoParser
-    ynab_memo_parser = YnabMemoParser(token='<token>', budget='<budget>', account='<account>')
-    # fetches all categories and returns a dict with group name as key and list of categories as values
-    categories = ynab_memo_parser.categories.fetch_all()
+from ynabtransactionadjuster import YnabTransactionAdjuster
+
+ynab_transaction_adjuster = YnabTransactionAdjuster(token='<token>', 
+                                                    budget='<budget>', 
+                                                    account='<account>')
+# fetches all categories and returns a dict with group name as key 
+# and list of categories as values
+categories = ynab_transaction_adjuster.categories.fetch_all()
 ```
 
 ## Change the payee
@@ -36,31 +42,35 @@ be called with either `fetch_by_name()` or `fetch_by_id()` method to fetch an ex
 following the method mentioned in the [preparations](#preparations) section.
 
 ```py
-from ynabmemoparser import Parser
-from ynabmemoparser.models import Payee
+from ynabtransactionadjuster import AdjusterFactory
+from ynabtransactionadjuster.models import Payee
 
-class MyParser(Parser):
 
-    def parse(self, original, modifier):
-        my_payee = Payee(name='My Payee')
-        # or 
-        my_payee = self.payees.fetch_by_name('My Payee')
-        # or 
-        my_payee = self.payees.fetch_by_id('payee_id')
-        # or for transfers
-        my_payee = self.payees.fetch_by_transfer_account_id('transfer_account_id')
-        modifier.payee = my_payee
-        
-        return modifier
+class MyAdjusterFactory(AdjusterFactory):
+
+	def run(self, original, modifier):
+		my_payee = Payee(name='My Payee')
+		# or 
+		my_payee = self.payees.fetch_by_name('My Payee')
+		# or 
+		my_payee = self.payees.fetch_by_id('payee_id')
+		# or for transfers
+		my_payee = self.payees.fetch_by_transfer_account_id('transfer_account_id')
+		modifier.payee = my_payee
+
+		return modifier
 ```
 The [`PayeeRepo`][repos.PayeeRepo] instance gets build when the library get initialized and can also be accessed 
-from the main instance. 
+from the main instance.
 
 ```py
-from ynabmemoparser import YnabMemoParser
-    ynab_memo_parser = YnabMemoParser(token='<token>', budget='<budget>', account='<account>')
-    # fetches all payees in the budget
-    payees = ynab_memo_parser.payees.fetch_all()
+from ynabtransactionadjuster import YnabTransactionAdjuster
+
+ynab_transaction_adjuster = YnabTransactionAdjuster(token='<token>', 
+                                                    budget='<budget>', 
+                                                    account='<account>')
+# fetches all payees in the budget
+payees = ynab_transaction_adjuster.payees.fetch_all()
 ```
 
 ## Split the transaction
@@ -68,21 +78,23 @@ The transaction can be splitted if the original transaction is not already a spl
 of an existing split transaction). Splits can be created by using [`SubTransaction`][models.SubTransaction] instances.
 There must be at least two subtransactions and the sum of their amounts must be equal to the amount of the original 
 transaction.
+
 ```py
-from ynabmemoparser import Parser
-from ynabmemoparser.models import SubTransaction
+from ynabtransactionadjuster import AdjusterFactory
+from ynabtransactionadjuster.models import SubTransaction
 
-class MyParser(Parser):
 
-    def parse(self, original, modifier):
-        # example for splitting a transaction in two equal amount subtransactions with different categories 
-        subtransaction_1 = SubTransaction(amount=original.amount / 2,
-                                          category=original.category)
-        subtransaction_2 = SubTransaction(amount=original.amount / 2, 
-                                          category=self.categories.fetch_by_name('My 2nd Category'))
-        modifier.subtransactions = [subtransaction_1, subtransaction_2]
-        
-        return modifier
+class MyAdjusterFactory(AdjusterFactory):
+
+	def run(self, original, modifier):
+		# example for splitting a transaction in two equal amount subtransactions with different categories 
+		subtransaction_1 = SubTransaction(amount=original.amount / 2,
+										  category=original.category)
+		subtransaction_2 = SubTransaction(amount=original.amount / 2,
+										  category=self.categories.fetch_by_name('My 2nd Category'))
+		modifier.subtransactions = [subtransaction_1, subtransaction_2]
+
+		return modifier
 ```
 
 
