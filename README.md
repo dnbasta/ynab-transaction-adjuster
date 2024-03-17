@@ -32,9 +32,7 @@ interface.
 ```py
 from ynabtransactionadjuster import YnabTransactionAdjuster
 
-ynab_transaction_adjuster = YnabTransactionAdjuster(token='<token>',
-													budget='<budget>',
-													account='<account>')
+ynab_transaction_adjuster = YnabTransactionAdjuster(token='<token>', budget='<budget>', account='<account>')
 orig_transactions = ynab_transaction_adjuster.fetch()
 ```
 
@@ -66,8 +64,7 @@ of `ModifiedTransaction` objects which can be inspected for the changed properti
 ```py
 transations = ynab_transaction_adjuster.fetch()
 # optionally filter transactions before passing them to method below
-mod_transactions = ynab_transaction_adjuster.adjust(transactions=transactions,
-													factory_class=MyAdjusterFactory)
+mod_transactions = ynab_transaction_adjuster.adjust(transactions=transactions, factory_class=MyAdjusterFactory)
 ```
 
 ### Update records in YNAB
