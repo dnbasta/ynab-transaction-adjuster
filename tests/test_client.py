@@ -6,7 +6,7 @@ from ynabtransactionadjuster.client import Client
 from ynabtransactionadjuster.models.payee import Payee
 
 
-@patch('ynabmemoparser.client.requests.get')
+@patch('ynabtransactionadjuster.client.requests.get')
 def test_fetch_categories(get_patch):
 	# Arrange
 	resp = MagicMock(spec=Response)
@@ -28,7 +28,7 @@ def test_fetch_categories(get_patch):
 	assert list(cats[0].categories)[0].id == 'c_id'
 
 
-@patch('ynabmemoparser.client.requests.get')
+@patch('ynabtransactionadjuster.client.requests.get')
 def test_fetch_payees(mock_get):
 	# Arrange
 	resp = MagicMock(spec=Response)

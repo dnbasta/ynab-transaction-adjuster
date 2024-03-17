@@ -49,8 +49,8 @@ def mock_category_repo():
 
 
 @pytest.fixture
-@patch('ynabmemoparser.ynabmemoparser.Client')
-def mock_memo_parser(mock_client, mock_category_repo):
+@patch('ynabtransactionadjuster.ynabtransactionadjuster.Client')
+def mock_ynab_adjuster(mock_client, mock_category_repo):
 	ymp = YnabTransactionAdjuster(budget='budget', account='account', token='token')
 	ymp.categories = mock_category_repo
 	return ymp
