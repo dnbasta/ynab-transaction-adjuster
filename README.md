@@ -1,6 +1,6 @@
 # ynab-memo-parser
 
-[![GitHub Release](https://img.shields.io/github/release/dnbasta/ynab-mmo-parser?style=flat)]() 
+[![GitHub Release](https://img.shields.io/github/release/dnbasta/ynab-memo-parser?style=flat)]() 
 [![Github Release](https://img.shields.io/maintenance/yes/2100)]()
 
 This library helps you to use original memo and payee information from your bank transactions to either show additional
