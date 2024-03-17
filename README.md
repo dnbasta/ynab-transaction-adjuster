@@ -3,11 +3,11 @@
 [![GitHub Release](https://img.shields.io/github/release/dnbasta/ynab-transaction-adjuster?style=flat)]() 
 [![Github Release](https://img.shields.io/maintenance/yes/2100)]()
 
+[!["Buy Me A Coffee"](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/dnbasta)
+
 This library helps you to automatically adjust transactions in YNAB based on your logic. It allows you to implement 
 your adjustments in a simple factory class which you can run against your existing transactions and update relevant 
 fields like date, payee, category, memo and flags. It also allows you to split transactions.
-
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/dnbasta)
 
 ## Preparations
 1. Create a personal access token for YNAB as described [here](https://api.ynab.com/)
