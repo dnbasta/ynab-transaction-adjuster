@@ -1,9 +1,7 @@
 from datetime import date
-from unittest.mock import patch
 
 import pytest
 
-from ynabtransactionadjuster import YnabTransactionAdjuster
 from ynabtransactionadjuster.models import OriginalTransaction, Category, Payee, OriginalSubTransaction, SubTransaction, CategoryGroup
 from ynabtransactionadjuster.repos import CategoryRepo
 
@@ -46,11 +44,3 @@ def mock_category_repo():
 	return CategoryRepo(categories=[
 		CategoryGroup(name='group1', categories=frozenset([Category(id='cid1', name='c_name')])),
 		CategoryGroup(name='group2', categories=frozenset([Category(id='cid2', name='c_name')]))])
-
-
-@pytest.fixture
-@patch('ynabtransactionadjuster.ynabtransactionadjuster.Client')
-def mock_ynab_adjuster(mock_client, mock_category_repo):
-	ymp = YnabTransactionAdjuster(budget='budget', account='account', token='token')
-	ymp.categories = mock_category_repo
-	return ymp
