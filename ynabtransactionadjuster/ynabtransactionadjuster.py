@@ -14,7 +14,9 @@ class YnabTransactionAdjuster:
 	child class and implement the `filter()`and `adjust()` method in it according to your needs. It has attributes
 	which allow you to lookup categories and payees from your budget.
 
-	:param
+	:param budget: The YNAB budget id to use
+	:param account: The YNAB account id to use
+	:param token: The YNAB token to use
 
 	:ivar categories: Collection of current categories in YNAB budget
 	:ivar payees: Collection of current payees in YNAB budget
@@ -27,6 +29,13 @@ class YnabTransactionAdjuster:
 		self.payees: PayeeRepo = PayeeRepo(self._client.fetch_payees())
 
 	def run(self) -> int:
+		"""Run the adjuster. It will fetch transactions from the YNAB account, filter & adjust them as per
+		implementation of the two methods and push the updated transactions back to YNAB
+
+		return: count of adjusted transactions which have been updated in YNAB
+		raises: AdjustError if there is any error during the adjust process
+		raises: HTTPError if there is any error with the YNAB API (e.g. wrong credentials)
+		"""
 		transactions = self._client.fetch_transactions()
 		filtered_transactions = self.filter(transactions)
 		sa = Adjuster(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
@@ -35,6 +44,14 @@ class YnabTransactionAdjuster:
 		return updated
 
 	def test(self) -> List[ModifiedTransaction]:
+		"""Tests the adjuster. It will fetch transactions from the YNAB account, filter & adjust them as per
+		implementation of the two methods. This function doesn't update records in YNAB but returns the modified
+		transactions so that they can be inspected.
+
+		:return: List of modified transactions
+		raises: AdjustError if there is any error during the adjust process
+		raises: HTTPError if there is any error with the YNAB API (e.g. wrong credentials)
+		"""
 		transactions = self._client.fetch_transactions()
 		filtered_transactions = self.filter(transactions)
 		sa = Adjuster(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
@@ -43,12 +60,18 @@ class YnabTransactionAdjuster:
 
 	@abstractmethod
 	def filter(self, transactions: List[OriginalTransaction]) -> List[OriginalTransaction]:
+		"""Function which implements filtering for the list of transactions from YNAB account. It receives a list of
+		the original transactions which can be filtered. Must return the filtered list or just the list if no filtering
+		is intended.
+
+		:param transactions: List of original transactions from YNAB
+		:return: Method needs to return a list of filtered transactions"""
 		pass
 
 	@abstractmethod
 	def adjust(self, original: OriginalTransaction, modifier: TransactionModifier) -> TransactionModifier:
-		"""Function which implements the actual modification of a transaction. It is initiated and called by the library
-		for all transactions provided in the parse_transaction method of the main class.
+		"""Function which implements the actual modification of a transaction. It receives the original transaction from
+		YNAB and a prefilled modifier. The modifier can be altered and must be returned.
 
 		:param original: Original transaction
 		:param modifier: Transaction modifier prefilled with values from original transaction. All attributes can be
