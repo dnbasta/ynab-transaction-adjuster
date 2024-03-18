@@ -6,10 +6,6 @@
         merge_init_into_class: true
         show_root_full_path: false
 
-::: adjusterfactory.AdjusterFactory
-    options:
-        show_root_full_path: false
-
 ## Repos
 
 ::: repos.CategoryRepo
@@ -26,6 +22,7 @@
 ::: models.Payee
 
 ## Exceptions
+::: exceptions.AdjustError
 ::: exceptions.NoMatchingCategoryError
 ::: exceptions.MultipleMatchingCategoriesError
 ::: exceptions.NoMatchingPayeeError
