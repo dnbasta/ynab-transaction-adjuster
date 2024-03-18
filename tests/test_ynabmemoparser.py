@@ -1,7 +1,7 @@
 import pytest
 
 from ynabtransactionadjuster import AdjusterFactory
-from ynabtransactionadjuster.exceptions import FactoryError
+from ynabtransactionadjuster.exceptions import AdjustError
 from ynabtransactionadjuster.models import ModifiedTransaction
 
 
@@ -13,7 +13,7 @@ def test_parse_transactions_fails(mock_ynab_adjuster, caplog, mock_original_tran
 			return modifier
 
 	# Act
-	with pytest.raises(FactoryError):
+	with pytest.raises(AdjustError):
 		mock_ynab_adjuster.adjust(transactions=[mock_original_transaction], factory_class=MyParser)
 
 
