@@ -38,8 +38,8 @@ class YnabTransactionAdjuster:
 		"""
 		transactions = self._client.fetch_transactions()
 		filtered_transactions = self.filter(transactions)
-		sa = Adjuster(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
-		modified_transactions = sa.run()
+		adjuster = Adjuster(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
+		modified_transactions = adjuster.run()
 		updated = self._client.update_transactions(modified_transactions)
 		return updated
 
