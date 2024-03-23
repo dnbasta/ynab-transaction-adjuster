@@ -17,7 +17,6 @@
 ::: models.OriginalSubTransaction
 ::: models.TransactionModifier
 ::: models.SubTransaction
-::: models.ModifiedTransaction
 ::: models.Category
 ::: models.Payee
 

@@ -1,4 +1,5 @@
 # Basic Usage
+
 ### Create an Adjuster
 Create a child class of [`YnabTransactionAdjuster`][ynabtransactionadjuster.YnabTransactionAdjuster].
 This class needs to implement a `filter()` and an `adjust()` method which contain the intended logic. The `filter()`
@@ -36,7 +37,7 @@ my_adjuster = MyAdjuster(token='<token>', budget='<budget>', account='<account>'
 ### Test
 Test the adjuster on records fetched via the `test()`method. The method fetches and executes the 
 adjustments but doesn't write the results back to YNAB. Instead it returns a list of 
-[`ModifiedTransaction`][models.ModifiedTransaction] objects which can be inspected for the changed properties.
+the changed transactions which can be inspected for the changed properties.
 
 ```py
 mod_transactions = my_adjuster.test()

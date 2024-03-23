@@ -2,6 +2,8 @@ site_name: "ynab-transaction-adjuster"
 
 theme:
   name: readthedocs
+  analytics:
+    gtag: G-CQYD14VWNV
 
 plugins:
 - search

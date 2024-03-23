@@ -32,9 +32,9 @@ class YnabTransactionAdjuster:
 		"""Run the adjuster. It will fetch transactions from the YNAB account, filter & adjust them as per
 		implementation of the two methods and push the updated transactions back to YNAB
 
-		return: count of adjusted transactions which have been updated in YNAB
-		raises: AdjustError if there is any error during the adjust process
-		raises: HTTPError if there is any error with the YNAB API (e.g. wrong credentials)
+		:return: count of adjusted transactions which have been updated in YNAB
+		:raises AdjustError: if there is any error during the adjust process
+		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
 		transactions = self._client.fetch_transactions()
 		filtered_transactions = self.filter(transactions)
@@ -43,19 +43,31 @@ class YnabTransactionAdjuster:
 		updated = self._client.update_transactions(modified_transactions)
 		return updated
 
-	def test(self) -> List[ModifiedTransaction]:
+	def test(self) -> List[dict]:
 		"""Tests the adjuster. It will fetch transactions from the YNAB account, filter & adjust them as per
 		implementation of the two methods. This function doesn't update records in YNAB but returns the modified
-		transactions so that they can be inspected.
+		transactions so that they can be inspected. `#! select * from source`
 
-		:return: List of modified transactions
-		raises: AdjustError if there is any error during the adjust process
-		raises: HTTPError if there is any error with the YNAB API (e.g. wrong credentials)
+		The returned dicts have the following structure:
+
+			{
+				"original": "<OriginalTransaction>",
+			 	"changes": {
+			 		"<Attribute>": {
+			 			"original": "<Original Value>",
+			 			"changed": "<Changed Value>"
+			 			}
+					}
+				}
+
+		:return: List of modified transactions in the format
+		:raises AdjustError: if there is any error during the adjust process
+		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
 		transactions = self._client.fetch_transactions()
 		filtered_transactions = self.filter(transactions)
 		sa = Adjuster(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
-		modified_transactions = sa.run()
+		modified_transactions = [{'original': mt.original_transaction, 'changes': mt.changed_attributes()} for mt in sa.run()]
 		return modified_transactions
 
 	@abstractmethod
