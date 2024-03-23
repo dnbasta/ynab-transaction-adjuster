@@ -21,11 +21,16 @@ class SubTransaction(BaseModel):
 	memo: Optional[str] = None
 
 	def as_dict(self) -> dict:
-		return dict(payee_id=self.payee.id,
-					payee_name=self.payee.name,
-					category_id=self.category.id,
-					amount=self.amount,
-					memo=self.memo)
+		instance_dict = dict(amount=self.amount)
+		if self.payee.name:
+			instance_dict['payee_name'] = self.payee.name
+		if self.payee.id:
+			instance_dict['payee_id'] = self.payee.id
+		if self.category.id:
+			instance_dict['category_id'] = self.category.id
+		if self.memo:
+			instance_dict['memo'] = self.memo
+		return instance_dict
 
 	@model_validator(mode='after')
 	def check_values(self):
