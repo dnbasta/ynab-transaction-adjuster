@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "ynab-transaction-adjuster"
 version = "0.0.0"
-description = "Library to automatically adjust transactions in YNAB based on your logic in simple factory class"
+description = "Library to adjust transactions in YNAB based on custom patterns"
 authors = ["Daniel Basta <ynab@basta.info>"]
 readme = "README.md"
 license = 'MIT'
