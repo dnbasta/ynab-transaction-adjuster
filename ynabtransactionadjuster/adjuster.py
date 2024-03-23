@@ -40,7 +40,7 @@ class Adjuster:
 
 	@staticmethod
 	def validate_attributes(modifier: TransactionModifier):
-		TransactionModifier.model_validate(modifier.__dict__, strict=True)
+		TransactionModifier.model_validate(modifier.__dict__)
 
 	@staticmethod
 	def validate_instance(modifier: Optional[TransactionModifier]):

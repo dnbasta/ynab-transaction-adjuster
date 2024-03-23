@@ -37,10 +37,11 @@ class ModifiedTransaction(BaseModel):
 		if self.transaction_modifier.payee != self.original_transaction.payee:
 			changed_attributes['payee'] = dict(original=self.original_transaction.payee,
 											   changed=self.transaction_modifier.payee)
-		if self.transaction_modifier.transaction_date != self.original_transaction.transaction_date:
+		if (self.transaction_modifier.transaction_date.isocalendar() !=
+				self.original_transaction.transaction_date.isocalendar()):
 			changed_attributes['transaction_date'] = dict(original=self.original_transaction.transaction_date,
 														  changed=self.transaction_modifier.transaction_date)
-		if self.transaction_modifier.category != self.original_transaction.category:
+		if self.transaction_modifier.category.id != self.original_transaction.category.id:
 			changed_attributes['category'] = dict(original=self.original_transaction.category,
 												  changed=self.transaction_modifier.category)
 		if self.transaction_modifier.memo != self.original_transaction.memo:
