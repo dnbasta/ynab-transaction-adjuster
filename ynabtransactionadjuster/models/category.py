@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel, ConfigDict
 
 
@@ -10,6 +8,6 @@ class Category(BaseModel):
 	:ivar name: The name of the category
 	"""
 	model_config = ConfigDict(frozen=True)
-	id: Optional[str]
+	id: str
 	name: str
 

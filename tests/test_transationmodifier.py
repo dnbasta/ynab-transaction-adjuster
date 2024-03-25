@@ -1,5 +1,4 @@
 from datetime import date, datetime
-from unittest.mock import MagicMock
 
 import pytest
 from pydantic import ValidationError
@@ -26,13 +25,8 @@ def mock_subtransaction():
 	('memo', 1),
 	('payee', None),
 	('payee', 'xxx'),
-	('category', None),
 	('category', 'xxx'),
 	('flag_color', 'brown'),
-	# ('subtransactions', [SubTransaction(memo='memo',
-	# 									payee=Payee(name='pname'),
-	# 									category=Category(name='cname', id='cid'),
-	# 									amount=500)]),
 	('subtransactions', ['xxx', 'xxx']),
 	('transaction_date', 'xxx')
 ])

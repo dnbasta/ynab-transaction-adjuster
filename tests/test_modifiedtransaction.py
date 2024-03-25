@@ -1,10 +1,9 @@
-from datetime import date
-from unittest.mock import MagicMock
+from datetime import date, datetime
 
 import pytest
 from pydantic import ValidationError
 
-from ynabtransactionadjuster.models import OriginalTransaction, Category, Payee, TransactionModifier, ModifiedTransaction, OriginalSubTransaction, SubTransaction
+from ynabtransactionadjuster.models import Category, Payee, TransactionModifier, ModifiedTransaction
 
 
 @pytest.mark.parametrize('test_attribute, test_input', [
@@ -42,3 +41,42 @@ def test_invalid_subtransactions(mock_original_transaction, mock_subtransaction)
 	mock_modifier.subtransactions = [mock_subtransaction, mock_subtransaction]
 	with pytest.raises(ValidationError):
 		ModifiedTransaction(original_transaction=mock_original_transaction, transaction_modifier=mock_modifier)
+
+
+def test_as_dict(mock_original_transaction, mock_subtransaction):
+	# Arrange
+	mock_modifier = TransactionModifier.from_original_transaction(mock_original_transaction)
+	mock_modifier.payee = Payee(id='pid2', name='pname2')
+	mock_modifier.category = Category(id='cid2', name='cname2')
+	mock_modifier.flag_color = 'blue'
+	mock_modifier.subtransactions = [mock_subtransaction, mock_subtransaction]
+	mt = ModifiedTransaction(original_transaction=mock_original_transaction, transaction_modifier=mock_modifier)
+
+	# Act
+	d = mt.as_dict()
+
+	# Assert
+	assert d['id'] == mock_original_transaction.id
+	assert d['payee_name'] == mt.transaction_modifier.payee.name
+	assert d['payee_id'] == mt.transaction_modifier.payee.id
+	assert d['category_id'] == mt.transaction_modifier.category.id
+	assert d['flag_color'] == mt.transaction_modifier.flag_color
+	assert len(d['subtransactions']) == 2
+	assert isinstance(d['subtransactions'][0], dict)
+	assert d['date'] == datetime.strftime(mock_modifier.transaction_date, '%Y-%m-%d')
+
+
+def test_as_dict_none_values(mock_original_transaction):
+	# Arrange
+	mock_modifier = TransactionModifier.from_original_transaction(mock_original_transaction)
+	mock_modifier.category = None
+	mock_modifier.flag_color = None
+	mt = ModifiedTransaction(original_transaction=mock_original_transaction, transaction_modifier=mock_modifier)
+
+	# Act
+	d = mt.as_dict()
+
+	# Assert
+	assert 'category_id' not in d.keys()
+	assert 'flag_color' not in d.keys()
+	assert 'subtransactions' not in d.keys()

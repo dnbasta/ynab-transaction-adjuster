@@ -20,19 +20,24 @@ class ModifiedTransaction(BaseModel):
 		return False
 
 	def as_dict(self) -> dict:
-		"""Returns a dictionary representation of the transaction"""
+		"""Returns a dictionary representation of the transaction which is used for the update call to YNAB"""
 		t_dict = dict(id=self.original_transaction.id,
-					memo=self.transaction_modifier.memo,
 					payee_name=self.transaction_modifier.payee.name,
 					payee_id=self.transaction_modifier.payee.id,
-					category_id=self.transaction_modifier.category.id,
-					flag_color=self.transaction_modifier.flag_color,
 					date=datetime.strftime(self.transaction_modifier.transaction_date, '%Y-%m-%d'))
 		if len(self.transaction_modifier.subtransactions) > 0:
-			t_dict = {**t_dict, 'subtransactions': [s.as_dict() for s in self.transaction_modifier.subtransactions]}
+			t_dict['subtransactions'] = [s.as_dict() for s in self.transaction_modifier.subtransactions]
+		if self.transaction_modifier.category:
+			t_dict['category_id'] = self.transaction_modifier.category.id
+		if self.transaction_modifier.flag_color:
+			t_dict['flag_color'] = self.transaction_modifier.flag_color
+		if self.transaction_modifier.memo:
+			t_dict['memo'] = self.transaction_modifier.memo
+
 		return t_dict
 
 	def changed_attributes(self) -> dict:
+		"""Returns a dictionary representation of the modified values and the original transaction"""
 		changed_attributes = {}
 		if self.transaction_modifier.payee != self.original_transaction.payee:
 			changed_attributes['payee'] = dict(original=self.original_transaction.payee,

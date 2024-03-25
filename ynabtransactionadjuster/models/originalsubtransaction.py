@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 from ynabtransactionadjuster.models.category import Category
 from ynabtransactionadjuster.models.payee import Payee
@@ -14,6 +15,6 @@ class OriginalSubTransaction:
 	:ivar memo: The memo of the subtransaction
 	"""
 	payee: Payee
-	category: Category
-	memo: str
+	category: Optional[Category]
+	memo: Optional[str]
 	amount: int

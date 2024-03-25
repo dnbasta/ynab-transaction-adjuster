@@ -9,29 +9,26 @@ from ynabtransactionadjuster.repos import CategoryRepo
 @pytest.fixture
 def mock_subtransaction(request):
 	return SubTransaction(memo='memo', amount=500,
-						  category=Category(name='cname', id=None),
+						  category=Category(name='cname', id='cid'),
 						  payee=Payee(name='pname'))
 
 
 @pytest.fixture
 def mock_original_transaction(request):
-	subs = []
+	subs = ()
 	try:
 		if request.param:
-			ost = OriginalSubTransaction(memo='memo1', amount=500,
-								   category=Category(name='cname', id=None),
+			st = OriginalSubTransaction(memo='memo1', amount=500,
+								   category=Category(name='cname', id='cid'),
 								   payee=Payee(name='pname'))
-			ost2 = OriginalSubTransaction(memo='memo2', amount=500,
-								   category=Category(name='cname', id=None),
-								   payee=Payee(name='pname'))
-			subs = [ost, ost2]
+			subs = (st, st)
 	except AttributeError as e:
 		pass
 	return OriginalTransaction(id='id',
 							   memo='memo',
 							   category=Category(id='cid1', name='cname'),
 							   payee=Payee(id='pid', name='pname'),
-							   subtransactions=frozenset(subs),
+							   subtransactions=subs,
 							   flag_color='red',
 							   amount=1000,
 							   import_payee_name='ipn',
