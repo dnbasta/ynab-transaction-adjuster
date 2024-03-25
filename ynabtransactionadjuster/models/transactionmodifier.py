@@ -20,7 +20,7 @@ class TransactionModifier(BaseModel):
 	"""
 
 	transaction_date: date
-	category: Category
+	category: Optional[Category]
 	memo: Optional[str]
 	payee: Payee
 	flag_color: Optional[Literal['red', 'green', 'blue', 'orange', 'purple', 'yellow']]

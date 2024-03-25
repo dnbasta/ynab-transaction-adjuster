@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
 from datetime import date, datetime
-from typing import Literal, FrozenSet
+from typing import Literal, Optional, Tuple
 
 from ynabtransactionadjuster.models.category import Category
 from ynabtransactionadjuster.models.payee import Payee
@@ -23,36 +23,41 @@ class OriginalTransaction:
 	"""
 	id: str
 	transaction_date: date
-	category: Category
+	category: Optional[Category]
 	amount: int
-	memo: str
+	memo: Optional[str]
 	payee: Payee
-	flag_color: Literal['red', 'green', 'blue', 'orange', 'purple', 'yellow']
-	import_payee_name_original: str
-	import_payee_name: str
-	subtransactions: FrozenSet[OriginalSubTransaction]
+	flag_color: Optional[Literal['red', 'green', 'blue', 'orange', 'purple', 'yellow']]
+	import_payee_name_original: Optional[str]
+	import_payee_name: Optional[str]
+	subtransactions: Tuple[OriginalSubTransaction, ...]
 
 	@classmethod
 	def from_dict(cls, t_dict: dict) -> 'OriginalTransaction':
+
+		def build_category(t_dict: dict) -> Optional[Category]:
+			if not t_dict['category_name'] in ('Uncategorized', 'Split'):
+				return Category(id=t_dict['category_id'], name=t_dict['category_name'])
+
+		def build_payee(t_dict: dict) -> Payee:
+			return Payee(id=t_dict['payee_id'], name=t_dict['payee_name'],
+						 transfer_account_id=t_dict['transfer_account_id'])
+
 		def build_subtransaction(s_dict: dict) -> OriginalSubTransaction:
-			st_category = Category(id=s_dict['category_id'], name=s_dict['category_name'])
-			st_payee = Payee(id=s_dict['payee_id'], name=s_dict['payee_name'], transfer_account_id=s_dict['transfer_account_id'])
-			return OriginalSubTransaction(payee=st_payee,
-										  category=st_category,
+			return OriginalSubTransaction(payee=build_payee(s_dict),
+										  category=build_category(s_dict),
 										  amount=s_dict['amount'],
 										  memo=s_dict['memo'])
 
-		category = Category(id=t_dict['category_id'], name=t_dict['category_name'])
-		payee = Payee(id=t_dict['payee_id'], name=t_dict['payee_name'], transfer_account_id=t_dict['transfer_account_id'])
 		return OriginalTransaction(id=t_dict['id'],
 								   transaction_date=datetime.strptime(t_dict['date'], '%Y-%m-%d').date(),
-								   category=category,
+								   category=build_category(t_dict),
 								   memo=t_dict['memo'],
 								   import_payee_name_original=t_dict['import_payee_name_original'],
 								   import_payee_name=t_dict['import_payee_name'],
 								   flag_color=t_dict['flag_color'],
-								   payee=payee,
-								   subtransactions=frozenset([build_subtransaction(st) for st in t_dict['subtransactions']]),
+								   payee=build_payee(t_dict),
+								   subtransactions=tuple([build_subtransaction(st) for st in t_dict['subtransactions']]),
 								   amount=t_dict['amount'])
 
 	def as_dict(self) -> dict:
