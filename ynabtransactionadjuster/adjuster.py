@@ -32,11 +32,8 @@ class Adjuster:
 			raise AdjustError(f"Error while adjusting {original.as_dict()}") from e
 
 	def validate_category(self, category: Category):
-		try:
+		if category:
 			self._categories.fetch_by_id(category.id)
-		except NoMatchingCategoryError as e:
-			if category.name not in ('Split', 'Uncategorized'):
-				raise e
 
 	@staticmethod
 	def validate_attributes(modifier: TransactionModifier):
