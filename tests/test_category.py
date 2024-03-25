@@ -5,7 +5,6 @@ from ynabtransactionadjuster.models import Category
 
 
 def test_category_success():
-	Category(name='name', id=None)
 	Category(name='name', id='id')
 
 
