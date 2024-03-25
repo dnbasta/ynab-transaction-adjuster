@@ -22,11 +22,11 @@ class SubTransaction(BaseModel):
 
 	def as_dict(self) -> dict:
 		instance_dict = dict(amount=self.amount)
-		if self.payee.name:
+		if self.payee and self.payee.name:
 			instance_dict['payee_name'] = self.payee.name
-		if self.payee.id:
+		if self.payee and self.payee.id:
 			instance_dict['payee_id'] = self.payee.id
-		if self.category.id:
+		if self.category and self.category.id:
 			instance_dict['category_id'] = self.category.id
 		if self.memo:
 			instance_dict['memo'] = self.memo
