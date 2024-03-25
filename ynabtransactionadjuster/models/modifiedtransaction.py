@@ -46,7 +46,8 @@ class ModifiedTransaction(BaseModel):
 				self.original_transaction.transaction_date.isocalendar()):
 			changed_attributes['transaction_date'] = dict(original=self.original_transaction.transaction_date,
 														  changed=self.transaction_modifier.transaction_date)
-		if self.transaction_modifier.category.id != self.original_transaction.category.id:
+		if (self.transaction_modifier.category and
+				self.transaction_modifier.category.id != self.original_transaction.category.id):
 			changed_attributes['category'] = dict(original=self.original_transaction.category,
 												  changed=self.transaction_modifier.category)
 		if self.transaction_modifier.memo != self.original_transaction.memo:
