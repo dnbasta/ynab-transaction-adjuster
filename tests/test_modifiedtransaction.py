@@ -11,7 +11,9 @@ from ynabtransactionadjuster.models import Category, Payee, TransactionModifier,
 	('transaction_date', date(2024, 1, 2)),
 	('category', Category(id='c_id1', name='c_name1')),
 	('payee', Payee(id='p_id1', name='p_name1', transfer_account_id='t_id1')),
-	('flag_color', 'blue')])
+	('flag_color', 'blue'),
+	('approved', True),
+	('cleared', 'cleared')])
 def test_is_changed_true(test_attribute, test_input, mock_original_transaction):
 	# Arrange
 	mock_modifier = TransactionModifier.from_original_transaction(mock_original_transaction)
@@ -64,6 +66,8 @@ def test_as_dict(mock_original_transaction, mock_subtransaction):
 	assert len(d['subtransactions']) == 2
 	assert isinstance(d['subtransactions'][0], dict)
 	assert d['date'] == datetime.strftime(mock_modifier.transaction_date, '%Y-%m-%d')
+	assert d['approved'] == mock_modifier.approved
+	assert d['cleared'] == mock_modifier.cleared
 
 
 def test_as_dict_none_values(mock_original_transaction):

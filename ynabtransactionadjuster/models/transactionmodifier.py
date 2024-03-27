@@ -17,6 +17,8 @@ class TransactionModifier(BaseModel):
 	:ivar payee: The payee of the transaction
 	:ivar flag_color: The flag color of the transaction
 	:ivar subtransactions: The subtransactions of the transaction
+	:ivar cleared: Clearance status
+	:ivar approved: Approval status of the transaction
 	"""
 
 	transaction_date: date
@@ -25,6 +27,8 @@ class TransactionModifier(BaseModel):
 	payee: Payee
 	flag_color: Optional[Literal['red', 'green', 'blue', 'orange', 'purple', 'yellow']]
 	subtransactions: List[SubTransaction]
+	approved: bool
+	cleared: Literal['uncleared', 'cleared', 'reconciled']
 
 	@classmethod
 	def from_original_transaction(cls, original_transaction: OriginalTransaction):
@@ -33,6 +37,8 @@ class TransactionModifier(BaseModel):
 				   payee=original_transaction.payee,
 				   memo=original_transaction.memo,
 				   flag_color=original_transaction.flag_color,
+				   approved=original_transaction.approved,
+				   cleared=original_transaction.cleared,
 				   subtransactions=[])
 
 	@model_validator(mode='after')

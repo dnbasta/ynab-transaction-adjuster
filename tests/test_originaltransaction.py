@@ -9,7 +9,8 @@ from ynabtransactionadjuster.models import OriginalTransaction, Category, Payee
 def mock_transaction_dict():
 	return dict(id='id', amount=1000, date='2024-01-01', category_name='category', category_id='categoryid',
 				payee_name='payee', payee_id='payeeid', flag_color=None, memo=None, subtransactions=[],
-				import_payee_name_original=None, import_payee_name=None, transfer_account_id=None)
+				import_payee_name_original=None, import_payee_name=None, transfer_account_id=None,
+				approved=False, cleared='uncleared')
 
 
 def test_from_dict(mock_transaction_dict):
@@ -23,6 +24,8 @@ def test_from_dict(mock_transaction_dict):
 	assert o.memo == mock_transaction_dict['memo']
 	assert o.import_payee_name_original == mock_transaction_dict['import_payee_name_original']
 	assert o.import_payee_name == mock_transaction_dict['import_payee_name']
+	assert o.approved == mock_transaction_dict['approved']
+	assert o.cleared == mock_transaction_dict['cleared']
 	assert not o.subtransactions
 
 

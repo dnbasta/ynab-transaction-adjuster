@@ -20,6 +20,8 @@ class OriginalTransaction:
 	:ivar flag_color: The flag color of the original transaction
 	:ivar import_payee_name: The payee as recorded by YNAB on import
 	:ivar import_payee_name_original: The original payee or memo as recorded by the bank
+	:ivar approved: approval status of the original transaction
+	:ivar cleared: clearance state of the original transaction
 	"""
 	id: str
 	transaction_date: date
@@ -31,6 +33,8 @@ class OriginalTransaction:
 	import_payee_name_original: Optional[str]
 	import_payee_name: Optional[str]
 	subtransactions: Tuple[OriginalSubTransaction, ...]
+	cleared: Literal['uncleared', 'cleared', 'reconciled']
+	approved: bool
 
 	@classmethod
 	def from_dict(cls, t_dict: dict) -> 'OriginalTransaction':
@@ -58,7 +62,9 @@ class OriginalTransaction:
 								   flag_color=t_dict['flag_color'],
 								   payee=build_payee(t_dict),
 								   subtransactions=tuple([build_subtransaction(st) for st in t_dict['subtransactions']]),
-								   amount=t_dict['amount'])
+								   amount=t_dict['amount'],
+								   approved=t_dict['approved'],
+								   cleared=t_dict['cleared'])
 
 	def as_dict(self) -> dict:
 		return asdict(self)

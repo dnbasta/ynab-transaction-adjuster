@@ -13,7 +13,9 @@ def mock_modifier(request):
 							   category=Category(name='cname', id='cid'),
 							   flag_color='red',
 							   subtransactions=[],
-							   transaction_date=date(2024, 1, 1))
+							   transaction_date=date(2024, 1, 1),
+							   cleared='uncleared',
+							   approved=False)
 
 
 @pytest.fixture
@@ -27,6 +29,7 @@ def mock_subtransaction():
 	('payee', 'xxx'),
 	('category', 'xxx'),
 	('flag_color', 'brown'),
+	('cleared', 'xxx'),
 	('subtransactions', ['xxx', 'xxx']),
 	('transaction_date', 'xxx')
 ])

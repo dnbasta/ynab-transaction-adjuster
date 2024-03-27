@@ -24,7 +24,9 @@ class ModifiedTransaction(BaseModel):
 		t_dict = dict(id=self.original_transaction.id,
 					payee_name=self.transaction_modifier.payee.name,
 					payee_id=self.transaction_modifier.payee.id,
-					date=datetime.strftime(self.transaction_modifier.transaction_date, '%Y-%m-%d'))
+					date=datetime.strftime(self.transaction_modifier.transaction_date, '%Y-%m-%d'),
+					approved=self.transaction_modifier.approved,
+					cleared=self.transaction_modifier.cleared)
 		if len(self.transaction_modifier.subtransactions) > 0:
 			t_dict['subtransactions'] = [s.as_dict() for s in self.transaction_modifier.subtransactions]
 		if self.transaction_modifier.category:
@@ -58,7 +60,13 @@ class ModifiedTransaction(BaseModel):
 													changed=self.transaction_modifier.flag_color)
 		if len(self.transaction_modifier.subtransactions) > 0:
 			changed_attributes['subtransactions'] = dict(original=[],
-														changed=self.transaction_modifier.subtransactions)
+														 changed=self.transaction_modifier.subtransactions)
+		if self.transaction_modifier.approved != self.original_transaction.approved:
+			changed_attributes['approved'] = dict(original=self.original_transaction.approved,
+												  changed=self.transaction_modifier.approved)
+		if self.transaction_modifier.cleared != self.original_transaction.cleared:
+			changed_attributes['cleared'] = dict(original=self.original_transaction.cleared,
+												 changed=self.transaction_modifier.cleared)
 		return changed_attributes
 
 	@model_validator(mode='after')
