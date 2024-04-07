@@ -7,7 +7,7 @@ from ynabtransactionadjuster.models.payee import Payee
 from ynabtransactionadjuster.models.originalsubtransaction import OriginalSubTransaction
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=True)
 class OriginalTransaction:
 	"""Represents original transaction from YNAB
 
