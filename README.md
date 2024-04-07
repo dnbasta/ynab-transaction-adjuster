@@ -24,54 +24,55 @@ pip install ynab-transaction-adjuster
 ## Usage
 A detailed documentation is available at https://ynab-transaction-adjuster.readthedocs.io
 
-### Fetch transactions
-Fetch current transactions from YNAB backend with all available information and check for useful values. All records 
-come with two additional attributes (`import_payee_name` and `import_payee_name_original`) which are not shown in the user 
-interface.
+# Basic Usage
 
+### Create an Adjuster
+Create a child class of `YnabTransactionAdjuster`.
+This class needs to implement a `filter()` and an `adjust()` method which contain the intended logic. The `filter()`
+method receives a list of `OriginalTransaction` objects which can be filtered before 
+adjustement. The `adjust()` method receives a singular `OriginalTransaction` and a 
+`TransactionModifier`. The latter is prefilled with values from the original transaction. 
+Its attributes can be modified, and it needs to be returned at the end of the function. 
+Please check the [detailed usage](https://ynab-transaction-adjuster.readthedocs.io/en/latest/detailed_usage/) section for explanations how to change different attributes.
 ```py
 from ynabtransactionadjuster import YnabTransactionAdjuster
-
-ynab_transaction_adjuster = YnabTransactionAdjuster(token='<token>', budget='<budget>', account='<account>')
-orig_transactions = ynab_transaction_adjuster.fetch()
-```
-
-### Create a `AdjusterFactory` child class
-This class is for implementing your actual logic. It needs to implement a `run()` method which receives on runtime 
-the `OriginalTransaction` and a `TransactionModifier`. The 
-latter is prefilled with values from the original transaction. Its attributes can be modified and it needs to be 
-returned at the end of the function.
-
-```py
-from ynabtransactionadjuster import AdjusterFactory
 from ynabtransactionadjuster.models import OriginalTransaction, TransactionModifier
 
 
-class MyAdjusterFactory(AdjusterFactory):
-
-	def run(self, original: OriginalTransaction, modifier: TransactionModifier) -> TransactionModifier:
-		# your implementation
+class MyAdjuster(YnabTransactionAdjuster):
+    
+    def filter(self, transactions: List[OriginalTransaction]) -> List[OriginalTransaction]:
+        # your implementation
+        
+        # return the filtered list of transactions
+        return transactions
+        
+    def adjust(self, original: OriginalTransaction, modifier: TransactionModifier) -> TransactionModifier:
+        # your implementation
 
 		# return the altered modifier
 		return modifier
 ```
 
-### Test your Factory class
-Test the factory on records fetched via the `fetch()`method. If only a subset of these transactions should
-get adjusted, filter them before handing the list over to the `adjust()` method. The method returns a list 
-of `ModifiedTransaction` objects which can be inspected for the changed properties.
-
+### Initialize
+Initalize the adjuster with `token`, `budget` and `account` from YNAB
 ```py
-transations = ynab_transaction_adjuster.fetch()
-# optionally filter transactions before passing them to method below
-mod_transactions = ynab_transaction_adjuster.adjust(transactions=transactions, factory_class=MyAdjusterFactory)
+my_adjuster = MyAdjuster(token='<token>', budget='<budget>', account='<account>')
 ```
 
-### Update records in YNAB
-If you are satisfied with your parsing results you can pass the list of the 
-`ModifedTransaction` objects to the `update()` method. It will update  
-the changed transactions in YNAB and return an integer with the number of successfully updated records.
+### Test
+Test the adjuster on records fetched via the `test()`method. The method fetches and executes the 
+adjustments but doesn't write the results back to YNAB. Instead it returns a list of 
+the changed transactions which can be inspected for the changed properties.
 
 ```py
-count = ynab_transaction_adjuster.update(transactions=mod_transactions)
+mod_transactions = my_adjuster.test()
+```
+
+### Run
+If you are satisfied with the functionality you can execute the adjuster with the `run()` method. This will run the 
+adjustments and will update the changed transactions in YNAB. The method returns an integer with the number of 
+successfully updated records.
+```py
+count_of_updated_transactions = my_adjuster.run()
 ```

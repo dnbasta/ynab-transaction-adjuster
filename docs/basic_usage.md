@@ -7,7 +7,7 @@ method receives a list of [`OriginalTransaction`][models.OriginalTransaction] ob
 adjustement. The `adjust()` method receives a singular [`OriginalTransaction`][models.OriginalTransaction] and a 
 [`TransactionModifier`][models.TransactionModifier]. The latter is prefilled with values from the original transaction. 
 Its attributes can be modified, and it needs to be returned at the end of the function. 
-Please refer to the [detailed usage](detailed_usage.md) section for explanations how to change different attributes.
+Please check the [detailed usage](detailed_usage.md) section for explanations how to change different attributes.
 ```py
 from ynabtransactionadjuster import YnabTransactionAdjuster
 from ynabtransactionadjuster.models import OriginalTransaction, TransactionModifier
