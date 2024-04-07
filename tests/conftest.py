@@ -15,21 +15,26 @@ def mock_subtransaction(request):
 
 @pytest.fixture
 def mock_original_transaction(request):
-	subs = ()
-	try:
-		if request.param:
+	subs = tuple()
+	memo = 'memo'
+	category = Category(id='cid1', name='cname')
+	flag_color = 'red'
+	if hasattr(request, 'param'):
+		if request.param == 'subtransactions':
 			st = OriginalSubTransaction(memo='memo1', amount=500,
 								   category=Category(name='cname', id='cid'),
 								   payee=Payee(name='pname'))
 			subs = (st, st)
-	except AttributeError as e:
-		pass
+		if request.param == 'optional_none':
+			memo = None
+			category = None
+			flag_color = None
 	return OriginalTransaction(id='id',
-							   memo='memo',
-							   category=Category(id='cid1', name='cname'),
+							   memo=memo,
+							   category=category,
 							   payee=Payee(id='pid', name='pname'),
 							   subtransactions=subs,
-							   flag_color='red',
+							   flag_color=flag_color,
 							   amount=1000,
 							   import_payee_name='ipn',
 							   import_payee_name_original='ipno',

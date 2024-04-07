@@ -40,34 +40,30 @@ class ModifiedTransaction(BaseModel):
 
 	def changed_attributes(self) -> dict:
 		"""Returns a dictionary representation of the modified values and the original transaction"""
-		changed_attributes = {}
-		if self.transaction_modifier.payee != self.original_transaction.payee:
-			changed_attributes['payee'] = dict(original=self.original_transaction.payee,
-											   changed=self.transaction_modifier.payee)
+		changed_attributes = dict()
+
+		for a in ('payee', 'category', 'flag_color', 'memo', 'approved', 'cleared'):
+			if self._attribute_changed(a):
+				changed_attributes[a] = self._create_changed_dict(a)
+
 		if (self.transaction_modifier.transaction_date.isocalendar() !=
 				self.original_transaction.transaction_date.isocalendar()):
-			changed_attributes['transaction_date'] = dict(original=self.original_transaction.transaction_date,
-														  changed=self.transaction_modifier.transaction_date)
-		if (self.transaction_modifier.category and
-				self.transaction_modifier.category.id != self.original_transaction.category.id):
-			changed_attributes['category'] = dict(original=self.original_transaction.category,
-												  changed=self.transaction_modifier.category)
-		if self.transaction_modifier.memo != self.original_transaction.memo:
-			changed_attributes['memo'] = dict(original=self.original_transaction.memo,
-											  changed=self.transaction_modifier.memo)
-		if self.transaction_modifier.flag_color != self.original_transaction.flag_color:
-			changed_attributes['flag_color'] = dict(original=self.original_transaction.flag_color,
-													changed=self.transaction_modifier.flag_color)
+			changed_attributes['transaction_date'] = self._create_changed_dict('transaction_date')
+
 		if len(self.transaction_modifier.subtransactions) > 0:
-			changed_attributes['subtransactions'] = dict(original=[],
-														 changed=self.transaction_modifier.subtransactions)
-		if self.transaction_modifier.approved != self.original_transaction.approved:
-			changed_attributes['approved'] = dict(original=self.original_transaction.approved,
-												  changed=self.transaction_modifier.approved)
-		if self.transaction_modifier.cleared != self.original_transaction.cleared:
-			changed_attributes['cleared'] = dict(original=self.original_transaction.cleared,
-												 changed=self.transaction_modifier.cleared)
+			changed_attributes['subtransactions'] = self._create_changed_dict('subtransactions')
+
 		return changed_attributes
+
+	def _attribute_changed(self, attribute: str) -> bool:
+		o = self.original_transaction.__getattribute__(attribute)
+		m = self.transaction_modifier.__getattribute__(attribute)
+		if o != m:
+			return True
+
+	def _create_changed_dict(self, attribute: str) -> dict:
+		return dict(original=self.original_transaction.__getattribute__(attribute),
+											  changed=self.transaction_modifier.__getattribute__(attribute))
 
 	@model_validator(mode='after')
 	def check_values(self):

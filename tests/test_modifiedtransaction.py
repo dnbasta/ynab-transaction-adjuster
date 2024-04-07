@@ -26,6 +26,23 @@ def test_is_changed_true(test_attribute, test_input, mock_original_transaction):
 	assert r is True
 
 
+@pytest.mark.parametrize('mock_original_transaction', ['optional_none'], indirect=True)
+@pytest.mark.parametrize('test_attribute, test_input', [
+	('memo', 'memox'),
+	('category', Category(id='c_id1', name='c_name1')),
+])
+def test_is_changed_true_none_values_in_original(test_attribute, test_input, mock_original_transaction):
+	# Arrange
+	mock_modifier = TransactionModifier.from_original_transaction(mock_original_transaction)
+	mock_modifier.__setattr__(test_attribute, test_input)
+	modified = ModifiedTransaction(original_transaction=mock_original_transaction, transaction_modifier=mock_modifier)
+
+	# Act
+	r = modified.is_changed()
+	assert r is True
+
+
+@pytest.mark.parametrize('mock_original_transaction', [None, 'optional_none'], indirect=True)
 def test_changed_false(mock_original_transaction):
 	# Arrange
 	mock_modifier = TransactionModifier.from_original_transaction(mock_original_transaction)
@@ -36,7 +53,7 @@ def test_changed_false(mock_original_transaction):
 	assert r is False
 
 
-@pytest.mark.parametrize('mock_original_transaction', [True], indirect=True)
+@pytest.mark.parametrize('mock_original_transaction', ['subtransactions'], indirect=True)
 def test_invalid_subtransactions(mock_original_transaction, mock_subtransaction):
 	# Arrange
 	mock_modifier = TransactionModifier.from_original_transaction(mock_original_transaction)
