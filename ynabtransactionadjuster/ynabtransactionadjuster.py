@@ -3,7 +3,7 @@ from typing import List
 
 from ynabtransactionadjuster.adjuster import Adjuster
 from ynabtransactionadjuster.client import Client
-from ynabtransactionadjuster.models import OriginalTransaction, ModifiedTransaction
+from ynabtransactionadjuster.models import OriginalTransaction
 from ynabtransactionadjuster.models import TransactionModifier
 from ynabtransactionadjuster.repos import CategoryRepo
 from ynabtransactionadjuster.repos import PayeeRepo
@@ -40,8 +40,10 @@ class YnabTransactionAdjuster:
 		filtered_transactions = self.filter(transactions)
 		adjuster = Adjuster(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
 		modified_transactions = adjuster.run()
-		updated = self._client.update_transactions(modified_transactions)
-		return updated
+		if modified_transactions:
+			updated = self._client.update_transactions(modified_transactions)
+			return updated
+		return 0
 
 	def test(self) -> List[dict]:
 		"""Tests the adjuster. It will fetch transactions from the YNAB account, filter & adjust them as per
