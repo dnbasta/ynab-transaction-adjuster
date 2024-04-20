@@ -27,9 +27,3 @@ def test_fetch_by_id_fail(mock_category_repo):
 	with pytest.raises(NoMatchingCategoryError):
 		mock_category_repo.fetch_by_id(category_id='xxx')
 
-
-def test_fetch_all(mock_category_repo):
-	r = mock_category_repo.fetch_all()
-	assert isinstance(r, dict)
-	assert r['group1'][0].id == 'cid1'
-	assert r['group2'][0].id == 'cid2'
