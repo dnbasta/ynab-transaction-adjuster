@@ -6,7 +6,10 @@ from ynabtransactionadjuster.models import Category
 
 
 class CategoryRepo:
-	"""Repository which holds all categories from your YNAB budget"""
+	"""Repository which holds all categories from your YNAB budget
+
+	:ivar categories: List of Category Groups in YNAB budget
+	"""
 	def __init__(self, categories: List[CategoryGroup]):
 		self.categories = categories
 
