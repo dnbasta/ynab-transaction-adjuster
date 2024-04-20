@@ -1,7 +1,15 @@
 # Reference
 
+## Module level functions
 
-::: ynabtransactionadjuster.YnabTransactionAdjuster
+:::functions.test_adjuster
+:::functions.run_adjuster
+:::functions.fetch_categories
+:::functions.fetch_payees
+
+## AdjusterBase class
+
+::: ynabtransactionadjuster.AdjusterBase
     options:
         merge_init_into_class: true
         show_root_full_path: false
@@ -12,7 +20,7 @@
 ::: repos.PayeeRepo
 
 ## Models
-
+::: models.Credentials
 ::: models.OriginalTransaction
 ::: models.OriginalSubTransaction
 ::: models.TransactionModifier

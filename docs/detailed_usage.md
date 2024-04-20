@@ -23,12 +23,12 @@ class MyAdjusterFactory(AdjusterBase):
 
 		return modifier
 ```
-The [`CategoryRepo`][repos.CategoryRepo] instance gets build when the adjuster gets initialized and can also be accessed 
-from the main instance (e.g. for finding category ids to be used in the parser later). The `fetch_all()` method fetches 
-all categories and returns a dict with group name as key and list of categories as values.
+The [`CategoryRepo`][repos.CategoryRepo] instance can also get fetched via the [`fetch_categories()`][functions.fetch_categories] 
+method using an [`Credentials`][models.Credentials] object.
 ```py
-my_adjuster = MyAdjuster(token='<token>', budget='<budget>', account='<account>')
-categories = my_adjuster.categories.fetch_all()
+from ynabtransactionadjuster import fetch_categories
+
+categories = fetch_categories(credentials=my_credentials)
 ```
 
 ## Change the payee
@@ -60,12 +60,13 @@ class MyAdjuster(AdjusterBase):
 
 		return modifier
 ```
-The [`PayeeRepo`][repos.PayeeRepo] instance gets build when the adjuster gets initialized and can also be accessed 
-from the main instance. The `fetch_all()` method fetches all payees in the budget.  
+The [`PayeeRepo`][repos.PayeeRepo] instance can also get fetched via the [`fetch_payees()`][functions.fetch_payees] 
+method using an [`Credentials`][models.Credentials] object.
 
 ```py
-my_adjuster = MyAdjuster(token='<token>', budget='<budget>', account='<account>')
-payees = my_adjuster.payees.fetch_all()
+from ynabtransactionadjuster import fetch_payees
+
+payees = fetch_payees(credentials=my_credentials)
 ```
 
 ## Split the transaction

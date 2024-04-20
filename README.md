@@ -33,46 +33,54 @@ method receives a list of `OriginalTransaction` objects which can be filtered be
 adjustement. The `adjust()` method receives a singular `OriginalTransaction` and a 
 `TransactionModifier`. The latter is prefilled with values from the original transaction. 
 Its attributes can be modified, and it needs to be returned at the end of the function. 
-Please check the [detailed usage](https://ynab-transaction-adjuster.readthedocs.io/en/latest/detailed_usage/) section for explanations how to change different attributes.
+Please check the [detailed usage](https://ynab-transaction-adjuster.readthedocs.io/en/latest/detailed_usage/) section 
+for explanations how to change different attributes.
+
 ```py
-from ynabtransactionadjuster import YnabTransactionAdjuster
+from ynabtransactionadjuster import AdjusterBase
 from ynabtransactionadjuster.models import OriginalTransaction, TransactionModifier
 
 
-class MyAdjuster(YnabTransactionAdjuster):
-    
-    def filter(self, transactions: List[OriginalTransaction]) -> List[OriginalTransaction]:
-        # your implementation
-        
-        # return the filtered list of transactions
-        return transactions
-        
-    def adjust(self, original: OriginalTransaction, modifier: TransactionModifier) -> TransactionModifier:
-        # your implementation
+class MyAdjuster(AdjusterBase):
+
+	def filter(self, transactions: List[OriginalTransaction]) -> List[OriginalTransaction]:
+		# your implementation
+
+		# return the filtered list of transactions
+		return transactions
+
+	def adjust(self, original: OriginalTransaction, modifier: TransactionModifier) -> TransactionModifier:
+		# your implementation
 
 		# return the altered modifier
 		return modifier
 ```
 
 ### Initialize
-Initalize the adjuster with `token`, `budget` and `account` from YNAB
+Create a `Credentials` object and initialize Adjuster class with it
 ```py
-my_adjuster = MyAdjuster(token='<token>', budget='<budget>', account='<account>')
+from ynabtransactionadjuster import Credentials
+
+my_credentials = Credentials(token='<token>', budget='<budget>', account='<account>')
+my_adjuster = MyAdjuster.from_credentials(credentials=my_credentials)
 ```
 
 ### Test
-Test the adjuster on records fetched via the `test()`method. The method fetches and executes the 
-adjustments but doesn't write the results back to YNAB. Instead it returns a list of 
-the changed transactions which can be inspected for the changed properties.
+Test the adjuster on records fetched via the `test_adjuster()` method. The method fetches and executes the adjustments 
+but doesn't write the results back to YNAB. Instead it returns a list of the changed transactions which can be 
+inspected for the changed properties.
 
 ```py
-mod_transactions = my_adjuster.test()
+from ynabtransactionadjuster import test_adjuster
+
+mod_transactions = test_adjuster(adjuster=my_adjuster, credentials=my_credentials)
 ```
 
 ### Run
-If you are satisfied with the functionality you can execute the adjuster with the `run()` method. This will run the 
-adjustments and will update the changed transactions in YNAB. The method returns an integer with the number of 
-successfully updated records.
+If you are satisfied with the functionality you can execute the adjuster with the `run_adjuster()` method. This will 
+run the adjustments and will update the changed transactions in YNAB. The method returns an integer with the number 
+of successfully updated records.
 ```py
-count_of_updated_transactions = my_adjuster.run()
+from ynabtransactionadjuster import run_adjuster
+count_of_updated_transactions = run_adjuster(adjuster=my_adjuster, credentials=my_credentials)
 ```
