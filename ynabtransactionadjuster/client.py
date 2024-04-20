@@ -6,7 +6,7 @@ from requests import HTTPError
 from ynabtransactionadjuster.models import CategoryGroup, ModifiedTransaction
 from ynabtransactionadjuster.models import OriginalTransaction
 from ynabtransactionadjuster.models import Payee
-
+from ynabtransactionadjuster.models.credentials import Credentials
 
 YNAB_BASE_URL = 'https://api.ynab.com/v1'
 
@@ -23,6 +23,10 @@ class Client:
 		self._header = {'Authorization': f'Bearer {token}'}
 		self._budget = budget
 		self._account = account
+
+	@classmethod
+	def from_credentials(cls, credentials: Credentials):
+		return cls(token=credentials.token, budget=credentials.budget, account=credentials.account)
 
 	def fetch_categories(self) -> List[CategoryGroup]:
 		"""Fetches categories from YNAB"""

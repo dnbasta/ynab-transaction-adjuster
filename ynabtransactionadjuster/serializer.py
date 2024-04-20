@@ -5,7 +5,7 @@ from ynabtransactionadjuster.models import OriginalTransaction, ModifiedTransact
 from ynabtransactionadjuster.repos import CategoryRepo
 
 
-class Adjuster:
+class Serializer:
 
 	def __init__(self, transactions: List[OriginalTransaction], adjust_func: Callable, categories: CategoryRepo):
 		self._transactions = transactions

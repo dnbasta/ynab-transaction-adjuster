@@ -7,21 +7,21 @@ recommended to ensure you only assign valid categories to the modifier. The libr
 categories and specifying a non-existing category will raise an error.
 
 ```py
-from ynabtransactionadjuster import YnabTransactionAdjuster
+from ynabtransactionadjuster import AdjusterBase
 
 
-class MyAdjusterFactory(YnabTransactionAdjuster):
-    
-    def filter(self, transactions):
-        return transactions
-        
-    def adjust(self, original, modifier):
-        my_category = self.categories.fetch_by_name('my_category')
-        # or alternatively
-        my_category = self.categories.fetch_by_id('category_id')
-        modifier.category = my_category
+class MyAdjusterFactory(AdjusterBase):
 
-        return modifier
+	def filter(self, transactions):
+		return transactions
+
+	def adjust(self, original, modifier):
+		my_category = self.categories.fetch_by_name('my_category')
+		# or alternatively
+		my_category = self.categories.fetch_by_id('category_id')
+		modifier.category = my_category
+
+		return modifier
 ```
 The [`CategoryRepo`][repos.CategoryRepo] instance gets build when the adjuster gets initialized and can also be accessed 
 from the main instance (e.g. for finding category ids to be used in the parser later). The `fetch_all()` method fetches 
@@ -39,26 +39,26 @@ called with `fetch_by_transfer_account_id()` to fetch a transfer payee. You can 
 account following the method mentioned in the [preparations](#preparations) section.
 
 ```py
-from ynabtransactionadjuster import YnabTransactionAdjuster
+from ynabtransactionadjuster import AdjusterBase
 from ynabtransactionadjuster.models import Payee
 
 
-class MyAdjuster(YnabTransactionAdjuster):
-    
-    def filter(self, transactions):
-        return transactions
-        
-    def adjust(self, original, modifier):
-        my_payee = Payee(name='My Payee')
-        # or 
-        my_payee = self.payees.fetch_by_name('My Payee')
-        # or 
-        my_payee = self.payees.fetch_by_id('payee_id')
-        # or for transfers
-        my_payee = self.payees.fetch_by_transfer_account_id('transfer_account_id')
-        modifier.payee = my_payee
+class MyAdjuster(AdjusterBase):
 
-        return modifier
+	def filter(self, transactions):
+		return transactions
+
+	def adjust(self, original, modifier):
+		my_payee = Payee(name='My Payee')
+		# or 
+		my_payee = self.payees.fetch_by_name('My Payee')
+		# or 
+		my_payee = self.payees.fetch_by_id('payee_id')
+		# or for transfers
+		my_payee = self.payees.fetch_by_transfer_account_id('transfer_account_id')
+		modifier.payee = my_payee
+
+		return modifier
 ```
 The [`PayeeRepo`][repos.PayeeRepo] instance gets build when the adjuster gets initialized and can also be accessed 
 from the main instance. The `fetch_all()` method fetches all payees in the budget.  
@@ -75,24 +75,24 @@ There must be at least two subtransactions and the sum of their amounts must be 
 transaction.
 
 ```py
-from ynabtransactionadjuster import YnabTransactionAdjuster
+from ynabtransactionadjuster import AdjusterBase
 from ynabtransactionadjuster.models import SubTransaction
 
 
-class MyAdjuster(YnabTransactionAdjuster):
-    
-    def filter(self, transactions):
-        return transactions
-        
-    def adjust(self, original, modifier):
-        # example for splitting a transaction in two equal amount subtransactions with different categories 
-        subtransaction_1 = SubTransaction(amount=original.amount / 2, 
-                                          category=original.category)
-        subtransaction_2 = SubTransaction(amount=original.amount / 2,
-										  category=self.categories.fetch_by_name('My 2nd Category'))
-        modifier.subtransactions = [subtransaction_1, subtransaction_2]
+class MyAdjuster(AdjusterBase):
 
-        return modifier
+	def filter(self, transactions):
+		return transactions
+
+	def adjust(self, original, modifier):
+		# example for splitting a transaction in two equal amount subtransactions with different categories 
+		subtransaction_1 = SubTransaction(amount=original.amount / 2,
+										  category=original.category)
+		subtransaction_2 = SubTransaction(amount=original.amount / 2,
+										  category=self.categories.fetch_by_name('My 2nd Category'))
+		modifier.subtransactions = [subtransaction_1, subtransaction_2]
+
+		return modifier
 ```
 
 
