@@ -14,10 +14,6 @@ class AdjusterBase:
 	child class and implement the `filter()`and `adjust()` method in it according to your needs. It has attributes
 	which allow you to lookup categories and payees from your budget.
 
-	:param budget: The YNAB budget id to use
-	:param account: The YNAB account id to use
-	:param token: The YNAB token to use
-
 	:ivar categories: Collection of current categories in YNAB budget
 	:ivar payees: Collection of current payees in YNAB budget
 	"""
