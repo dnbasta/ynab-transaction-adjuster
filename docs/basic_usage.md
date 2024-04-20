@@ -39,14 +39,15 @@ my_adjuster = MyAdjuster.from_credentials(credentials=my_credentials)
 ```
 
 ### Test
-Test the adjuster on records fetched via the [`test_adjuster()`][functions.test_adjuster] method. The method fetches 
+Test the adjuster on records fetched via the [`dry_run_adjuster()`][functions.dry_run_adjuster] method. The method 
+fetches 
 and executes the adjustments but doesn't write the results back to YNAB. Instead it returns a list of the changed 
 transactions which can be inspected for the changed properties.
 
 ```py
-from ynabtransactionadjuster import test_adjuster
+from ynabtransactionadjuster import dry_run_adjuster
 
-mod_transactions = test_adjuster(adjuster=my_adjuster, credentials=my_credentials)
+mod_transactions = dry_run_adjuster(adjuster=my_adjuster, credentials=my_credentials)
 ```
 
 ### Run

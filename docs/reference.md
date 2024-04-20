@@ -2,7 +2,7 @@
 
 ## Module level functions
 
-:::functions.test_adjuster
+:::functions.dry_run_adjuster
 :::functions.run_adjuster
 :::functions.fetch_categories
 :::functions.fetch_payees

@@ -29,7 +29,7 @@ def fetch_payees(credentials: Credentials) -> PayeeRepo:
 	return PayeeRepo(client.fetch_payees())
 
 
-def test_adjuster(adjuster: AdjusterBase, credentials: Credentials) -> List[dict]:
+def dry_run_adjuster(adjuster: AdjusterBase, credentials: Credentials) -> List[dict]:
 
 	"""Tests the adjuster. It will fetch transactions from the YNAB account, filter & adjust them as per
 	implementation of the two methods. This function doesn't update records in YNAB but returns the modified

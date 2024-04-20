@@ -1,4 +1,4 @@
 from ynabtransactionadjuster.adjusterbase import AdjusterBase
 from ynabtransactionadjuster.repos import CategoryRepo, PayeeRepo
 from ynabtransactionadjuster.models.credentials import Credentials
-from ynabtransactionadjuster.functions import fetch_payees, fetch_categories, run_adjuster, test_adjuster
+from ynabtransactionadjuster.functions import fetch_payees, fetch_categories, run_adjuster, dry_run_adjuster

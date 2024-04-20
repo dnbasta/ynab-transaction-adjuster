@@ -71,9 +71,9 @@ but doesn't write the results back to YNAB. Instead it returns a list of the cha
 inspected for the changed properties.
 
 ```py
-from ynabtransactionadjuster import test_adjuster
+from ynabtransactionadjuster import dry_run_adjuster
 
-mod_transactions = test_adjuster(adjuster=my_adjuster, credentials=my_credentials)
+mod_transactions = dry_run_adjuster(adjuster=my_adjuster, credentials=my_credentials)
 ```
 
 ### Run
