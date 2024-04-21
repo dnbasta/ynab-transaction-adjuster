@@ -31,14 +31,14 @@ class Modifier(BaseModel):
 	cleared: Literal['uncleared', 'cleared', 'reconciled']
 
 	@classmethod
-	def from_original_transaction(cls, original_transaction: Transaction):
-		return cls(transaction_date=original_transaction.transaction_date,
-				   category=original_transaction.category,
-				   payee=original_transaction.payee,
-				   memo=original_transaction.memo,
-				   flag_color=original_transaction.flag_color,
-				   approved=original_transaction.approved,
-				   cleared=original_transaction.cleared,
+	def from_transaction(cls, transaction: Transaction):
+		return cls(transaction_date=transaction.transaction_date,
+				   category=transaction.category,
+				   payee=transaction.payee,
+				   memo=transaction.memo,
+				   flag_color=transaction.flag_color,
+				   approved=transaction.approved,
+				   cleared=transaction.cleared,
 				   subtransactions=[])
 
 	@model_validator(mode='after')

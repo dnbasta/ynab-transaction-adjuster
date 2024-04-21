@@ -16,7 +16,7 @@ from ynabtransactionadjuster.models import Category, Payee, Modifier, ModifiedTr
 	('cleared', 'cleared')])
 def test_is_changed_true(test_attribute, test_input, mock_original_transaction):
 	# Arrange
-	mock_modifier = Modifier.from_original_transaction(mock_original_transaction)
+	mock_modifier = Modifier.from_transaction(mock_original_transaction)
 	mock_modifier.__setattr__(test_attribute, test_input)
 	modified = ModifiedTransaction(original_transaction=mock_original_transaction, transaction_modifier=mock_modifier)
 
@@ -33,7 +33,7 @@ def test_is_changed_true(test_attribute, test_input, mock_original_transaction):
 ])
 def test_is_changed_true_none_values_in_original(test_attribute, test_input, mock_original_transaction):
 	# Arrange
-	mock_modifier = Modifier.from_original_transaction(mock_original_transaction)
+	mock_modifier = Modifier.from_transaction(mock_original_transaction)
 	mock_modifier.__setattr__(test_attribute, test_input)
 	modified = ModifiedTransaction(original_transaction=mock_original_transaction, transaction_modifier=mock_modifier)
 
@@ -45,7 +45,7 @@ def test_is_changed_true_none_values_in_original(test_attribute, test_input, moc
 @pytest.mark.parametrize('mock_original_transaction', [None, 'optional_none'], indirect=True)
 def test_changed_false(mock_original_transaction):
 	# Arrange
-	mock_modifier = Modifier.from_original_transaction(mock_original_transaction)
+	mock_modifier = Modifier.from_transaction(mock_original_transaction)
 	modified = ModifiedTransaction(original_transaction=mock_original_transaction, transaction_modifier=mock_modifier)
 
 	# Act
@@ -56,7 +56,7 @@ def test_changed_false(mock_original_transaction):
 @pytest.mark.parametrize('mock_original_transaction', ['subtransactions'], indirect=True)
 def test_invalid_subtransactions(mock_original_transaction, mock_subtransaction):
 	# Arrange
-	mock_modifier = Modifier.from_original_transaction(mock_original_transaction)
+	mock_modifier = Modifier.from_transaction(mock_original_transaction)
 	mock_modifier.subtransactions = [mock_subtransaction, mock_subtransaction]
 	with pytest.raises(ValidationError):
 		ModifiedTransaction(original_transaction=mock_original_transaction, transaction_modifier=mock_modifier)
@@ -64,7 +64,7 @@ def test_invalid_subtransactions(mock_original_transaction, mock_subtransaction)
 
 def test_as_dict(mock_original_transaction, mock_subtransaction):
 	# Arrange
-	mock_modifier = Modifier.from_original_transaction(mock_original_transaction)
+	mock_modifier = Modifier.from_transaction(mock_original_transaction)
 	mock_modifier.payee = Payee(id='pid2', name='pname2')
 	mock_modifier.category = Category(id='cid2', name='cname2')
 	mock_modifier.flag_color = 'blue'
@@ -89,7 +89,7 @@ def test_as_dict(mock_original_transaction, mock_subtransaction):
 
 def test_as_dict_none_values(mock_original_transaction):
 	# Arrange
-	mock_modifier = Modifier.from_original_transaction(mock_original_transaction)
+	mock_modifier = Modifier.from_transaction(mock_original_transaction)
 	mock_modifier.category = None
 	mock_modifier.flag_color = None
 	mt = ModifiedTransaction(original_transaction=mock_original_transaction, transaction_modifier=mock_modifier)
