@@ -7,10 +7,10 @@ from ynabtransactionadjuster.models import Payee
 class PayeeRepo:
 	"""Repository which holds all payees from your YNAB budget
 
-	:ivar payees: List of payees in YNAB budget
+	:ivar _payees: List of payees in YNAB budget
 	"""
 	def __init__(self, payees: List[Payee]):
-		self.payees = payees
+		self._payees = payees
 
 	def fetch_by_name(self, payee_name: str) -> Payee:
 		"""Fetches a payee by its name
@@ -20,7 +20,7 @@ class PayeeRepo:
 		:raises NoMatchingPayeeError: if no matching payee is found
 		"""
 		try:
-			return next(p for p in self.payees if p.name == payee_name)
+			return next(p for p in self._payees if p.name == payee_name)
 		except StopIteration:
 			raise NoMatchingPayeeError(f"No payee with name '{payee_name}")
 
@@ -32,7 +32,7 @@ class PayeeRepo:
 		:raises NoMatchingPayeeError: if no matching payee is found
 		"""
 		try:
-			return next(p for p in self.payees if p.id == payee_id)
+			return next(p for p in self._payees if p.id == payee_id)
 		except StopIteration:
 			raise NoMatchingPayeeError(f"No payee with id '{payee_id}")
 
@@ -44,6 +44,12 @@ class PayeeRepo:
 		:raises NoMatchingPayeeError: if no matching payee is found
 		"""
 		try:
-			return next(p for p in self.payees if p.transfer_account_id == transfer_account_id)
+			return next(p for p in self._payees if p.transfer_account_id == transfer_account_id)
 		except StopIteration:
 			raise NoMatchingPayeeError(f"No payee found for transfer_account_id {transfer_account_id}")
+
+	def fetch_all(self) -> List[Payee]:
+		"""Fetches all payees from YNAB budget
+
+		:return: List of all payees in budget"""
+		return self._payees
