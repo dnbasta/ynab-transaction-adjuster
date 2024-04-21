@@ -52,4 +52,4 @@ class CategoryRepo:
 		:return: Dictionary with group names as keys and list of categories as values
 		"""
 
-		return {cg.name: list(cg._categories) for cg in self._categories}
+		return {cg.name: list(cg.categories) for cg in self._categories}
