@@ -8,10 +8,10 @@ from ynabtransactionadjuster.models import Category
 class CategoryRepo:
 	"""Repository which holds all categories from your YNAB budget
 
-	:ivar categories: List of Category Groups in YNAB budget
+	:ivar _categories: List of Category Groups in YNAB budget
 	"""
 	def __init__(self, categories: List[CategoryGroup]):
-		self.categories = categories
+		self._categories = categories
 
 	def fetch_by_name(self, category_name: str, group_name: str = None) -> Category:
 		"""Fetches a YNAB category by its name
@@ -23,9 +23,9 @@ class CategoryRepo:
 		:raises MultipleMatchingCategoriesError: if multiple matching categories are found
 		"""
 		if group_name:
-			cat_groups = [c for c in self.categories if c.name == group_name]
+			cat_groups = [c for c in self._categories if c.name == group_name]
 		else:
-			cat_groups = self.categories
+			cat_groups = self._categories
 
 		cats = [c for cg in cat_groups for c in cg.categories if category_name == c.name]
 
@@ -42,6 +42,14 @@ class CategoryRepo:
 		:raises NoMatchingCategoryError: if no matching category is found
 		"""
 		try:
-			return next(c for cg in self.categories for c in cg.categories if c.id == category_id)
+			return next(c for cg in self._categories for c in cg.categories if c.id == category_id)
 		except StopIteration:
 			raise NoMatchingCategoryError(category_id)
+
+	def fetch_all(self) -> Dict[str, List[Category]]:
+		"""Fetches all Categories from YNAB budget
+
+		:return: Dictionary with group names as keys and list of categories as values
+		"""
+
+		return {cg.name: list(cg._categories) for cg in self._categories}
