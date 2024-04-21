@@ -2,9 +2,10 @@
 ## Change the category
 The `adjust()` method allows changing the category of the transaction. For that purpose the adjuster class comes with a 
 [`CategoryRepo`][repos.CategoryRepo] instance attached which can be used in the method via `self.categories`. The repo 
-can be called with either `fetch_by_name()` or `fetch_by_id()` method to fetch a valid category. Using the repo is 
-recommended to ensure you only assign valid categories to the modifier. The library doesn't allow creating new 
-categories and specifying a non-existing category will raise an error.
+can be called with either `fetch_by_name()` or `fetch_by_id()` method to fetch a valid category. `fetch_all()` will 
+return a `dict` with group names as key and a list of categories as values. It can be used for custom search patterns 
+if needed. Using the category lookup is recommended to ensure only assign valid categories are assigned. The library 
+doesn't allow creating new categories and specifying a non-existing category will raise an error.
 
 ```py
 from ynabtransactionadjuster import Adjuster
