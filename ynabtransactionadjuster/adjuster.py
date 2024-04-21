@@ -72,7 +72,7 @@ class Adjuster:
 		"""
 		filtered_transactions = self.filter(self.transactions)
 		s = Serializer(transactions=self.transactions, adjust_func=self.adjust, categories=self.categories)
-		modified_transactions = [{'original': mt.original_transaction, 'changes': mt.changed_attributes()} for mt in s.run()]
+		modified_transactions = [{'original': mt.transaction, 'changes': mt.changed_attributes()} for mt in s.run()]
 		return modified_transactions
 
 	def run(self) -> int:
