@@ -7,10 +7,10 @@ recommended to ensure you only assign valid categories to the modifier. The libr
 categories and specifying a non-existing category will raise an error.
 
 ```py
-from ynabtransactionadjuster import AdjusterBase
+from ynabtransactionadjuster import Adjuster
 
 
-class MyAdjusterFactory(AdjusterBase):
+class MyAdjusterFactory(Adjuster):
 
 	def filter(self, transactions):
 		return transactions
@@ -39,11 +39,11 @@ called with `fetch_by_transfer_account_id()` to fetch a transfer payee. You can 
 account following the method mentioned in the [preparations](#preparations) section.
 
 ```py
-from ynabtransactionadjuster import AdjusterBase
+from ynabtransactionadjuster import Adjuster
 from ynabtransactionadjuster.models import Payee
 
 
-class MyAdjuster(AdjusterBase):
+class MyAdjuster(Adjuster):
 
 	def filter(self, transactions):
 		return transactions
@@ -76,11 +76,11 @@ There must be at least two subtransactions and the sum of their amounts must be 
 transaction.
 
 ```py
-from ynabtransactionadjuster import AdjusterBase
+from ynabtransactionadjuster import Adjuster
 from ynabtransactionadjuster.models import SubTransaction
 
 
-class MyAdjuster(AdjusterBase):
+class MyAdjuster(Adjuster):
 
 	def filter(self, transactions):
 		return transactions

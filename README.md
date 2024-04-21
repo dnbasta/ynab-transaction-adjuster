@@ -27,21 +27,18 @@ A detailed documentation is available at https://ynab-transaction-adjuster.readt
 # Basic Usage
 
 ### Create an Adjuster
-Create a child class of `YnabTransactionAdjuster`.
-This class needs to implement a `filter()` and an `adjust()` method which contain the intended logic. The `filter()`
-method receives a list of `OriginalTransaction` objects which can be filtered before 
-adjustement. The `adjust()` method receives a singular `OriginalTransaction` and a 
-`TransactionModifier`. The latter is prefilled with values from the original transaction. 
-Its attributes can be modified, and it needs to be returned at the end of the function. 
+Create a child class of `Adjuster`. This class needs to implement a `filter()` and an `adjust()` method which contain 
+the intended logic. The `filter()` method receives a list of `OriginalTransaction` objects which can be filtered before 
+adjustement. The `adjust()` method receives a singular `OriginalTransaction` and a `TransactionModifier`. The latter is 
+prefilled with values from the original transaction. Its attributes can be modified, and it needs to be returned at 
+the end of the function. 
 Please check the [detailed usage](https://ynab-transaction-adjuster.readthedocs.io/en/latest/detailed_usage/) section 
 for explanations how to change different attributes.
 
 ```py
-from ynabtransactionadjuster import AdjusterBase
-from ynabtransactionadjuster.models import OriginalTransaction, TransactionModifier
+from ynabtransactionadjuster import Adjuster, OriginalTransaction, TransactionModifier
 
-
-class MyAdjuster(AdjusterBase):
+class MyAdjuster(Adjuster):
 
 	def filter(self, transactions: List[OriginalTransaction]) -> List[OriginalTransaction]:
 		# your implementation
@@ -57,7 +54,7 @@ class MyAdjuster(AdjusterBase):
 ```
 
 ### Initialize
-Create a `Credentials` object and initialize Adjuster class with it
+Create a [`Credentials`][models.Credentials] object and initialize Adjuster class with it
 ```py
 from ynabtransactionadjuster import Credentials
 
@@ -66,21 +63,18 @@ my_adjuster = MyAdjuster.from_credentials(credentials=my_credentials)
 ```
 
 ### Test
-Test the adjuster on records fetched via the `test_adjuster()` method. The method fetches and executes the adjustments 
-but doesn't write the results back to YNAB. Instead it returns a list of the changed transactions which can be 
-inspected for the changed properties.
+Test the adjuster on records fetched via the `dry_run()` method. It executes the adjustments but doesn't write the 
+results back to YNAB. Instead it returns a list of the changed transactions which can be inspected for the changed 
+properties.
 
 ```py
-from ynabtransactionadjuster import dry_run_adjuster
-
-mod_transactions = dry_run_adjuster(adjuster=my_adjuster, credentials=my_credentials)
+mod_transactions = my_adjuster.dry_run()
 ```
 
 ### Run
-If you are satisfied with the functionality you can execute the adjuster with the `run_adjuster()` method. This will 
-run the adjustments and will update the changed transactions in YNAB. The method returns an integer with the number 
-of successfully updated records.
+If you are satisfied with the functionality you can execute the adjuster with the `run()` method. This will run the 
+adjustments and will update the changed transactions in YNAB. The method returns an integer with the number of 
+successfully updated records.
 ```py
-from ynabtransactionadjuster import run_adjuster
-count_of_updated_transactions = run_adjuster(adjuster=my_adjuster, credentials=my_credentials)
+count_of_updated_transactions = my_adjuster.run()
 ```

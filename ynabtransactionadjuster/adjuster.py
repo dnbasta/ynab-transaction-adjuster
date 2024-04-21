@@ -10,7 +10,7 @@ from ynabtransactionadjuster.repos import PayeeRepo
 from ynabtransactionadjuster.serializer import Serializer
 
 
-class AdjusterBase:
+class Adjuster:
 	"""Abstract class which modifies transactions according to concrete implementation. You need to create your own
 	child class and implement the `filter()`and `adjust()` method in it according to your needs. It has attributes
 	which allow you to lookup categories and payees from your budget.

@@ -1,15 +1,6 @@
 # Reference
 
-## Module level functions
-
-:::functions.dry_run_adjuster
-:::functions.run_adjuster
-:::functions.fetch_categories
-:::functions.fetch_payees
-
-## AdjusterBase class
-
-::: ynabtransactionadjuster.AdjusterBase
+::: ynabtransactionadjuster.Adjuster
     options:
         merge_init_into_class: true
         show_root_full_path: false
