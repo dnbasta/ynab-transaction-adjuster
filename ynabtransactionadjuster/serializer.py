@@ -1,4 +1,5 @@
-from typing import List, Callable, Optional
+import inspect
+from typing import List, Callable, Optional, OrderedDict
 
 from ynabtransactionadjuster.exceptions import AdjustError, NoMatchingCategoryError
 from ynabtransactionadjuster.models import Transaction, ModifiedTransaction, Modifier, Category
@@ -13,23 +14,24 @@ class Serializer:
 		self._categories = categories
 
 	def run(self) -> List[ModifiedTransaction]:
-		modified_transactions = [self.adjust_single(original=t, adjust_func=self._adjust_func)
+		modified_transactions = [self.adjust_single(transaction=t, adjust_func=self._adjust_func)
 								 for t in self._transactions]
 		filtered_transactions = [t for t in modified_transactions if t.is_changed()]
 		return filtered_transactions
 
-	def adjust_single(self, original: Transaction, adjust_func: Callable) -> ModifiedTransaction:
-		modifier = Modifier.from_original_transaction(original_transaction=original)
+	def adjust_single(self, transaction: Transaction, adjust_func: Callable) -> ModifiedTransaction:
+		modifier = Modifier.from_transaction(transaction=transaction)
 		try:
-			modifier_return = adjust_func(original=original, modifier=modifier)
+			transaction_field, modifier_field = self.find_field_names(adjust_func)
+			modifier_return = adjust_func(**{transaction_field: transaction, modifier_field: modifier})
 			self.validate_instance(modifier_return)
 			self.validate_attributes(modifier_return)
 			self.validate_category(modifier_return.category)
-			modified_transaction = ModifiedTransaction(original_transaction=original,
-													 transaction_modifier=modifier_return)
+			modified_transaction = ModifiedTransaction(original_transaction=transaction,
+													   transaction_modifier=modifier_return)
 			return modified_transaction
 		except Exception as e:
-			raise AdjustError(f"Error while adjusting {original.as_dict()}") from e
+			raise AdjustError(f"Error while adjusting {transaction.as_dict()}") from e
 
 	def validate_category(self, category: Category):
 		if category:
@@ -43,3 +45,10 @@ class Serializer:
 	def validate_instance(modifier: Optional[Modifier]):
 		if not isinstance(modifier, Modifier):
 			raise AdjustError(f"Adjust function doesn't return TransactionModifier object")
+
+	@staticmethod
+	def find_field_names(adjust_func: Callable) -> (str, str):
+		args_dict = inspect.signature(adjust_func).parameters
+		transaction_field = next(k for k, v in args_dict.items() if v.annotation == Transaction)
+		modifier_field = next(k for k, v in args_dict.items() if v.annotation == Modifier)
+		return transaction_field, modifier_field
