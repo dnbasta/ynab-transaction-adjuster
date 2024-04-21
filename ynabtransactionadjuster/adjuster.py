@@ -3,8 +3,8 @@ from typing import List
 
 from ynabtransactionadjuster.models.credentials import Credentials
 from ynabtransactionadjuster.client import Client
-from ynabtransactionadjuster.models import OriginalTransaction
-from ynabtransactionadjuster.models import TransactionModifier
+from ynabtransactionadjuster.models import Transaction
+from ynabtransactionadjuster.models import Modifier
 from ynabtransactionadjuster.repos import CategoryRepo
 from ynabtransactionadjuster.repos import PayeeRepo
 from ynabtransactionadjuster.serializer import Serializer
@@ -20,7 +20,7 @@ class Adjuster:
 	:ivar transactions: Transactions from YNAB Account
 	:ivar credentials: Credentials for YNAB API
 	"""
-	def __init__(self, categories: CategoryRepo, payees: PayeeRepo, transactions: List[OriginalTransaction],
+	def __init__(self, categories: CategoryRepo, payees: PayeeRepo, transactions: List[Transaction],
 				 credentials: Credentials) -> None:
 		self.categories = categories
 		self.payees = payees
@@ -40,7 +40,7 @@ class Adjuster:
 		return cls(categories=categories, payees=payees, transactions=transactions, credentials=credentials)
 
 	@abstractmethod
-	def filter(self, transactions: List[OriginalTransaction]) -> List[OriginalTransaction]:
+	def filter(self, transactions: List[Transaction]) -> List[Transaction]:
 		"""Function which implements filtering for the list of transactions from YNAB account. It receives a list of
 		the original transactions which can be filtered. Must return the filtered list or just the list if no filtering
 		is intended.
@@ -50,7 +50,7 @@ class Adjuster:
 		pass
 
 	@abstractmethod
-	def adjust(self, original: OriginalTransaction, modifier: TransactionModifier) -> TransactionModifier:
+	def adjust(self, original: Transaction, modifier: Modifier) -> Modifier:
 		"""Function which implements the actual modification of a transaction. It receives the original transaction from
 		YNAB and a prefilled modifier. The modifier can be altered and must be returned.
 

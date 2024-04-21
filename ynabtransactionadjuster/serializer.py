@@ -1,13 +1,13 @@
 from typing import List, Callable, Optional
 
 from ynabtransactionadjuster.exceptions import AdjustError, NoMatchingCategoryError
-from ynabtransactionadjuster.models import OriginalTransaction, ModifiedTransaction, TransactionModifier, Category
+from ynabtransactionadjuster.models import Transaction, ModifiedTransaction, Modifier, Category
 from ynabtransactionadjuster.repos import CategoryRepo
 
 
 class Serializer:
 
-	def __init__(self, transactions: List[OriginalTransaction], adjust_func: Callable, categories: CategoryRepo):
+	def __init__(self, transactions: List[Transaction], adjust_func: Callable, categories: CategoryRepo):
 		self._transactions = transactions
 		self._adjust_func = adjust_func
 		self._categories = categories
@@ -18,8 +18,8 @@ class Serializer:
 		filtered_transactions = [t for t in modified_transactions if t.is_changed()]
 		return filtered_transactions
 
-	def adjust_single(self, original: OriginalTransaction, adjust_func: Callable) -> ModifiedTransaction:
-		modifier = TransactionModifier.from_original_transaction(original_transaction=original)
+	def adjust_single(self, original: Transaction, adjust_func: Callable) -> ModifiedTransaction:
+		modifier = Modifier.from_original_transaction(original_transaction=original)
 		try:
 			modifier_return = adjust_func(original=original, modifier=modifier)
 			self.validate_instance(modifier_return)
@@ -36,10 +36,10 @@ class Serializer:
 			self._categories.fetch_by_id(category.id)
 
 	@staticmethod
-	def validate_attributes(modifier: TransactionModifier):
-		TransactionModifier.model_validate(modifier.__dict__)
+	def validate_attributes(modifier: Modifier):
+		Modifier.model_validate(modifier.__dict__)
 
 	@staticmethod
-	def validate_instance(modifier: Optional[TransactionModifier]):
-		if not isinstance(modifier, TransactionModifier):
+	def validate_instance(modifier: Optional[Modifier]):
+		if not isinstance(modifier, Modifier):
 			raise AdjustError(f"Adjust function doesn't return TransactionModifier object")

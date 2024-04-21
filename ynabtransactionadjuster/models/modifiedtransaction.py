@@ -2,13 +2,13 @@ from datetime import datetime
 
 from pydantic import BaseModel, model_validator
 
-from ynabtransactionadjuster.models.originaltransaction import OriginalTransaction
-from ynabtransactionadjuster.models.transactionmodifier import TransactionModifier
+from ynabtransactionadjuster.models import Transaction
+from ynabtransactionadjuster.models import Modifier
 
 
 class ModifiedTransaction(BaseModel):
-	original_transaction: OriginalTransaction
-	transaction_modifier: TransactionModifier
+	original_transaction: Transaction
+	transaction_modifier: Modifier
 
 	def is_changed(self) -> bool:
 		"""Helper function to determine if transaction has been altered as compared to original one

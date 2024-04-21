@@ -12,10 +12,11 @@
 
 ## Models
 ::: models.Credentials
-::: models.OriginalTransaction
-::: models.OriginalSubTransaction
-::: models.TransactionModifier
+::: models.Transaction
 ::: models.SubTransaction
+::: models.Modifier
+::: models.ModifierSubTransaction
+::: models.ModifiedTransaction
 ::: models.Category
 ::: models.Payee
 

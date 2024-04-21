@@ -3,24 +3,24 @@ from datetime import date, datetime
 import pytest
 from pydantic import ValidationError
 
-from ynabtransactionadjuster.models import TransactionModifier, Payee, Category, SubTransaction
+from ynabtransactionadjuster.models import Modifier, Payee, Category, ModifierSubTransaction
 
 
 @pytest.fixture
 def mock_modifier(request):
-	return TransactionModifier(memo='memo',
-							   payee=Payee(name='pname'),
-							   category=Category(name='cname', id='cid'),
-							   flag_color='red',
-							   subtransactions=[],
-							   transaction_date=date(2024, 1, 1),
-							   cleared='uncleared',
-							   approved=False)
+	return Modifier(memo='memo',
+					payee=Payee(name='pname'),
+					category=Category(name='cname', id='cid'),
+					flag_color='red',
+					subtransactions=[],
+					transaction_date=date(2024, 1, 1),
+					cleared='uncleared',
+					approved=False)
 
 
 @pytest.fixture
 def mock_subtransaction():
-	return SubTransaction(memo='memo', payee=Payee(name='pname'), category=Category(name='cname', id='cid'), amount=500)
+	return ModifierSubTransaction(memo='memo', payee=Payee(name='pname'), category=Category(name='cname', id='cid'), amount=500)
 
 
 @pytest.mark.parametrize('test_attr, test_value', [
@@ -39,14 +39,14 @@ def test_invalid_types(test_attr, test_value, mock_modifier):
 	# Act
 	mock_modifier.__setattr__(test_attr, test_value)
 	with pytest.raises(ValidationError):
-		TransactionModifier.model_validate(mock_modifier.__dict__)
+		Modifier.model_validate(mock_modifier.__dict__)
 
 
 def test_invalid_subtransactions(mock_modifier, mock_subtransaction):
 	# Arrange
 	mock_modifier.subtransactions = [mock_subtransaction]
 	with pytest.raises(ValidationError):
-		TransactionModifier.model_validate(mock_modifier.__dict__)
+		Modifier.model_validate(mock_modifier.__dict__)
 
 
 @pytest.mark.parametrize('test_attr, test_value', [
@@ -58,11 +58,11 @@ def test_valid(test_attr, test_value, mock_modifier):
 	# Arrange
 	mock_modifier.__setattr__(test_attr, test_value)
 	# Assert
-	TransactionModifier.model_validate(mock_modifier.__dict__)
+	Modifier.model_validate(mock_modifier.__dict__)
 
 
 def test_valid_subtransactions(mock_modifier, mock_subtransaction):
 	mock_modifier.subtransactions = [mock_subtransaction, mock_subtransaction]
-	TransactionModifier.model_validate(mock_modifier.__dict__)
+	Modifier.model_validate(mock_modifier.__dict__)
 	mock_modifier.subtransactions = [mock_subtransaction, mock_subtransaction, mock_subtransaction]
-	TransactionModifier.model_validate(mock_modifier.__dict__)
+	Modifier.model_validate(mock_modifier.__dict__)

@@ -1,3 +1,3 @@
 from ynabtransactionadjuster.adjuster import Adjuster
 from ynabtransactionadjuster.repos import CategoryRepo, PayeeRepo
-from ynabtransactionadjuster.models import OriginalTransaction, OriginalSubTransaction, Category, CategoryGroup, Payee, Credentials, TransactionModifier, ModifiedTransaction
+from ynabtransactionadjuster.models import Transaction, SubTransaction, Category, CategoryGroup, Payee, Credentials, Modifier, ModifiedTransaction, ModifierSubTransaction

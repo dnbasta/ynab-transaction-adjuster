@@ -4,7 +4,7 @@ import requests
 from requests import HTTPError
 
 from ynabtransactionadjuster.models import CategoryGroup, ModifiedTransaction
-from ynabtransactionadjuster.models import OriginalTransaction
+from ynabtransactionadjuster.models import Transaction
 from ynabtransactionadjuster.models import Payee
 from ynabtransactionadjuster.models.credentials import Credentials
 
@@ -46,14 +46,14 @@ class Client:
 		payees = [Payee.from_dict(p) for p in data if p['deleted'] is False]
 		return payees
 
-	def fetch_transactions(self) -> List[OriginalTransaction]:
+	def fetch_transactions(self) -> List[Transaction]:
 		"""Fetches transactions from YNAB"""
 		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/accounts/{self._account}/transactions', headers=self._header)
 		r.raise_for_status()
 
 		data = r.json()['data']['transactions']
 		transaction_dicts = [t for t in data if t['deleted'] is False]
-		transactions = [OriginalTransaction.from_dict(t) for t in transaction_dicts]
+		transactions = [Transaction.from_dict(t) for t in transaction_dicts]
 		return transactions
 
 	def update_transactions(self, transactions: List[ModifiedTransaction]) -> int:
