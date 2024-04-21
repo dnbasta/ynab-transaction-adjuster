@@ -37,7 +37,7 @@ def test_dry_run(mock_category_repo, caplog, mock_original_transaction):
 	assert r[0]['changes']['memo']['changed'] == memo
 
 
-@patch('ynabtransactionadjuster.adjusterbase.Client.update_transactions')
+@patch('ynabtransactionadjuster.adjuster.Client.update_transactions')
 def test_run(mock_update, mock_category_repo, caplog, mock_original_transaction):
 	# Arrange
 	my_adjuster = MockYnabTransactionAdjuster(memo='test')
@@ -49,7 +49,7 @@ def test_run(mock_update, mock_category_repo, caplog, mock_original_transaction)
 
 
 @pytest.mark.parametrize('test_input', ['a', 'b'])
-@patch('ynabtransactionadjuster.adjusterbase.Client.update_transactions')
+@patch('ynabtransactionadjuster.adjuster.Client.update_transactions')
 def test_run_no_modified(mock_update, mock_category_repo, caplog, test_input, mock_original_transaction):
 	# Arrange
 	my_adjuster = MockYnabTransactionAdjuster(memo='memo')
