@@ -12,6 +12,7 @@ from ynabtransactionadjuster.models import Modifier
 from ynabtransactionadjuster.repos import CategoryRepo
 from ynabtransactionadjuster.repos import PayeeRepo
 from ynabtransactionadjuster.serializer import Serializer
+from ynabtransactionadjuster.signaturechecker import SignatureChecker
 
 
 @dataclass
@@ -75,7 +76,7 @@ class Adjuster(metaclass=ABCMeta):
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
-		self._check_signature(self.filter)
+		self.check_signatures()
 		filtered_transactions = self.filter(self.transactions)
 		s = Serializer(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
 		modified_transactions = s.run()
@@ -91,7 +92,7 @@ class Adjuster(metaclass=ABCMeta):
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
-		self._check_signature(self.filter)
+		self.check_signatures()
 		filtered_transactions = self.filter(self.transactions)
 		s = Serializer(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
 		modified_transactions = s.run()
@@ -101,8 +102,6 @@ class Adjuster(metaclass=ABCMeta):
 			return updated
 		return 0
 
-	@staticmethod
-	def _check_signature(func: Callable):
-		args_dict = inspect.signature(func).parameters
-		if len(args_dict) != 1:
-			raise SignatureError(f"Function '{func.__name__}' needs to have exactly one parameter")
+	def check_signatures(self):
+		SignatureChecker(func=self.filter, parent_func=Adjuster.filter).check()
+		SignatureChecker(func=self.adjust, parent_func=Adjuster.adjust).check()
