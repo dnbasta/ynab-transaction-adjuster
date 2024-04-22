@@ -1,9 +1,7 @@
-from unittest.mock import PropertyMock, MagicMock
+from unittest.mock import MagicMock
 
-import pytest
 
 from ynabtransactionadjuster import Modifier, Transaction
-from ynabtransactionadjuster.exceptions import SignatureError
 from ynabtransactionadjuster.serializer import Serializer
 
 
