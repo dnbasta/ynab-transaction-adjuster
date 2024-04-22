@@ -40,7 +40,8 @@ my_adjuster = MyAdjuster.from_credentials(credentials=my_credentials)
 ### Test
 Test the adjuster on records fetched via the `dry_run()` method. It executes the adjustments but doesn't write the 
 results back to YNAB. Instead it returns a list of the changed transactions which can be inspected for the changed 
-properties.
+properties. It takes an optional parameter `pretty_print` which, if set to `True`, prints modifications in an easy 
+readable string representation to the console.
 
 ```py
 mod_transactions = my_adjuster.dry_run()
