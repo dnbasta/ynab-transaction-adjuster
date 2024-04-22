@@ -1,5 +1,6 @@
 import inspect
 from abc import abstractmethod, ABCMeta
+from dataclasses import dataclass
 from typing import List, Callable
 
 from ynabtransactionadjuster.exceptions import SignatureError
@@ -12,6 +13,7 @@ from ynabtransactionadjuster.repos import PayeeRepo
 from ynabtransactionadjuster.serializer import Serializer
 
 
+@dataclass
 class Adjuster(metaclass=ABCMeta):
 	"""Abstract class which modifies transactions according to concrete implementation. You need to create your own
 	child class and implement the `filter()`and `adjust()` method in it according to your needs. It has attributes
@@ -22,12 +24,10 @@ class Adjuster(metaclass=ABCMeta):
 	:ivar transactions: Transactions from YNAB Account
 	:ivar credentials: Credentials for YNAB API
 	"""
-	def __init__(self, categories: CategoryRepo, payees: PayeeRepo, transactions: List[Transaction],
-				 credentials: Credentials) -> None:
-		self.categories = categories
-		self.payees = payees
-		self.transactions = transactions
-		self.credentials = credentials
+	credentials: Credentials
+	categories: CategoryRepo
+	payees: PayeeRepo
+	transactions: List[Transaction]
 
 	@classmethod
 	def from_credentials(cls, credentials: Credentials):
