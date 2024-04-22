@@ -29,9 +29,8 @@ A detailed documentation is available at https://ynab-transaction-adjuster.readt
 ### Create an Adjuster
 Create a child class of `Adjuster`. This class needs to implement a `filter()` and an `adjust()` method which contain 
 the intended logic. The `filter()` method receives a list of `Transaction` objects which can be filtered before 
-adjustement. The `adjust()` method receives a singular `Transaction` and a `Modifier`. The latter is 
-prefilled with values from the original transaction. Its attributes can be modified, and it needs to be returned at 
-the end of the function. 
+adjustement. The `adjust()` method receives a single `Transaction` and a `Modifier`.The latter is prefilled with values 
+from the original transaction and can be altered. The modifier needs to be returned at the end of the function. 
 Please check the [detailed usage](https://ynab-transaction-adjuster.readthedocs.io/en/latest/detailed_usage/) section 
 for explanations how to change different attributes.
 
