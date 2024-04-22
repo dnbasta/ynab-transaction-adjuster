@@ -17,7 +17,7 @@ class MockYnabTransactionAdjuster(Adjuster):
 	def filter(self, transactions):
 		return transactions
 
-	def adjust(self, original, modifier):
+	def adjust(self, transaction, modifier):
 		modifier.memo = self.memo
 		return modifier
 
