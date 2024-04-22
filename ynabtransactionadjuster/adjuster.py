@@ -73,6 +73,7 @@ class Adjuster(metaclass=ABCMeta):
 		:param pretty_print: if set to True will print modified transactions as strings in console
 
 		:return: List of modified transactions
+		:raises SignatureError: if signature of implemented adjuster functions is not compatible
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
@@ -89,6 +90,7 @@ class Adjuster(metaclass=ABCMeta):
 		implementation of the two methods and push the updated transactions back to YNAB
 
 		:return: count of adjusted transactions which have been updated in YNAB
+		:raises SignatureError: if signature of implemented adjuster functions is not compatible
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
