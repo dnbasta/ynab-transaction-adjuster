@@ -68,3 +68,6 @@ class Transaction:
 
 	def as_dict(self) -> dict:
 		return asdict(self)
+
+	def __str__(self) -> str:
+		return f"{self.transaction_date} | {self.payee.name} | {float(self.amount) / 1000:.2f} | {self.memo}"

@@ -64,19 +64,23 @@ class Adjuster(metaclass=ABCMeta):
 		"""
 		pass
 
-	def dry_run(self) -> List[ModifiedTransaction]:
+	def dry_run(self, pretty_print: bool = False) -> List[ModifiedTransaction]:
 		"""Tests the adjuster. It will fetch transactions from the YNAB account, filter & adjust them as per
 		implementation of the two methods. This function doesn't update records in YNAB but returns the modified
 		transactions so that they can be inspected.
+
+		:param pretty_print: if set to True will print modified transactions as strings in console
 
 		:return: List of modified transactions
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
-		self.check_signature(self.filter)
+		self._check_signature(self.filter)
 		filtered_transactions = self.filter(self.transactions)
 		s = Serializer(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
 		modified_transactions = s.run()
+		if pretty_print:
+			print('\n'.join(map(str, modified_transactions)))
 		return modified_transactions
 
 	def run(self) -> int:
@@ -87,7 +91,7 @@ class Adjuster(metaclass=ABCMeta):
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
-		self.check_signature(self.filter)
+		self._check_signature(self.filter)
 		filtered_transactions = self.filter(self.transactions)
 		s = Serializer(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
 		modified_transactions = s.run()
@@ -98,7 +102,7 @@ class Adjuster(metaclass=ABCMeta):
 		return 0
 
 	@staticmethod
-	def check_signature(func: Callable):
+	def _check_signature(func: Callable):
 		args_dict = inspect.signature(func).parameters
 		if len(args_dict) != 1:
 			raise SignatureError(f"Function '{func.__name__}' needs to have exactly one parameter")

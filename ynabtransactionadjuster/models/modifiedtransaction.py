@@ -19,8 +19,8 @@ class ModifiedTransaction(BaseModel):
 			return True
 		return False
 
-	def __repr__(self) -> str:
-		return f"{self.__class__.__name__}(id='{self.transaction.id}', modified_attributes={self.changed_attributes()}))"
+	def __str__(self) -> str:
+		return f"{self.transaction} | {self.changed_attributes()}"
 
 	def as_dict(self) -> dict:
 		"""Returns a dictionary representation of the transaction which is used for the update call to YNAB"""
@@ -69,7 +69,7 @@ class ModifiedTransaction(BaseModel):
 					changed=self.modifier.__getattribute__(attribute))
 
 	@model_validator(mode='after')
-	def check_values(self):
+	def _check_values(self):
 		if len(self.modifier.subtransactions) > 1:
 			if len(self.transaction.subtransactions) > 1:
 				raise ValueError(f"Existing Subtransactions can not be updated")
