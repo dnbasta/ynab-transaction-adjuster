@@ -3,6 +3,7 @@ from abc import abstractmethod, ABCMeta
 from dataclasses import dataclass
 from typing import List, Callable
 
+from ynabtransactionadjuster.models import ModifiedTransaction
 from ynabtransactionadjuster.exceptions import SignatureError
 from ynabtransactionadjuster.models.credentials import Credentials
 from ynabtransactionadjuster.client import Client
@@ -63,19 +64,19 @@ class Adjuster(metaclass=ABCMeta):
 		"""
 		pass
 
-	def dry_run(self) -> List[dict]:
+	def dry_run(self) -> List[ModifiedTransaction]:
 		"""Tests the adjuster. It will fetch transactions from the YNAB account, filter & adjust them as per
 		implementation of the two methods. This function doesn't update records in YNAB but returns the modified
 		transactions so that they can be inspected.
 
-		:return: List of modified transactions in the format
+		:return: List of modified transactions
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
 		self.check_signature(self.filter)
 		filtered_transactions = self.filter(self.transactions)
 		s = Serializer(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
-		modified_transactions = [{'original': mt.transaction, 'changes': mt.changed_attributes()} for mt in s.run()]
+		modified_transactions = s.run()
 		return modified_transactions
 
 	def run(self) -> int:
