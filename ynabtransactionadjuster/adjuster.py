@@ -1,6 +1,8 @@
-from abc import abstractmethod
-from typing import List
+import inspect
+from abc import abstractmethod, ABCMeta
+from typing import List, Callable
 
+from ynabtransactionadjuster.exceptions import SignatureError
 from ynabtransactionadjuster.models.credentials import Credentials
 from ynabtransactionadjuster.client import Client
 from ynabtransactionadjuster.models import Transaction
@@ -10,7 +12,7 @@ from ynabtransactionadjuster.repos import PayeeRepo
 from ynabtransactionadjuster.serializer import Serializer
 
 
-class Adjuster:
+class Adjuster(metaclass=ABCMeta):
 	"""Abstract class which modifies transactions according to concrete implementation. You need to create your own
 	child class and implement the `filter()`and `adjust()` method in it according to your needs. It has attributes
 	which allow you to lookup categories and payees from your budget.
@@ -50,11 +52,11 @@ class Adjuster:
 		pass
 
 	@abstractmethod
-	def adjust(self, original: Transaction, modifier: Modifier) -> Modifier:
+	def adjust(self, transaction: Transaction, modifier: Modifier) -> Modifier:
 		"""Function which implements the actual modification of a transaction. It receives the original transaction from
 		YNAB and a prefilled modifier. The modifier can be altered and must be returned.
 
-		:param original: Original transaction
+		:param transaction: Original transaction
 		:param modifier: Transaction modifier prefilled with values from original transaction. All attributes can be
 		changed and will modify the transaction
 		:returns: Method needs to return the transaction modifier after modification
@@ -70,8 +72,9 @@ class Adjuster:
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
+		self.check_signature(self.filter)
 		filtered_transactions = self.filter(self.transactions)
-		s = Serializer(transactions=self.transactions, adjust_func=self.adjust, categories=self.categories)
+		s = Serializer(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
 		modified_transactions = [{'original': mt.transaction, 'changes': mt.changed_attributes()} for mt in s.run()]
 		return modified_transactions
 
@@ -83,6 +86,7 @@ class Adjuster:
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
+		self.check_signature(self.filter)
 		filtered_transactions = self.filter(self.transactions)
 		s = Serializer(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
 		modified_transactions = s.run()
@@ -91,3 +95,9 @@ class Adjuster:
 			updated = client.update_transactions(modified_transactions)
 			return updated
 		return 0
+
+	@staticmethod
+	def check_signature(func: Callable):
+		args_dict = inspect.signature(func).parameters
+		if len(args_dict) != 1:
+			raise SignatureError(f"Function '{func.__name__}' needs to have exactly one parameter")

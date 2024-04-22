@@ -25,3 +25,7 @@ class AdjustError(Exception):
 	"""Raised when an error occurs while running the factory on a transaction or during validation of the returned
 	results of the run"""
 	pass
+
+
+class SignatureError(Exception):
+	""" Raised when function is not defined with right signature"""

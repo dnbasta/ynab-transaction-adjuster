@@ -1,7 +1,7 @@
 import inspect
-from typing import List, Callable, Optional, OrderedDict
+from typing import List, Callable, Optional
 
-from ynabtransactionadjuster.exceptions import AdjustError, NoMatchingCategoryError
+from ynabtransactionadjuster.exceptions import AdjustError, SignatureError
 from ynabtransactionadjuster.models import Transaction, ModifiedTransaction, Modifier, Category
 from ynabtransactionadjuster.repos import CategoryRepo
 
@@ -21,14 +21,14 @@ class Serializer:
 
 	def adjust_single(self, transaction: Transaction, adjust_func: Callable) -> ModifiedTransaction:
 		modifier = Modifier.from_transaction(transaction=transaction)
+		transaction_field, modifier_field = self.find_field_names(adjust_func)
+		modifier_return = adjust_func(**{transaction_field: transaction, modifier_field: modifier})
 		try:
-			transaction_field, modifier_field = self.find_field_names(adjust_func)
-			modifier_return = adjust_func(**{transaction_field: transaction, modifier_field: modifier})
 			self.validate_instance(modifier_return)
 			self.validate_attributes(modifier_return)
 			self.validate_category(modifier_return.category)
-			modified_transaction = ModifiedTransaction(original_transaction=transaction,
-													   transaction_modifier=modifier_return)
+			modified_transaction = ModifiedTransaction(transaction=transaction,
+													   modifier=modifier_return)
 			return modified_transaction
 		except Exception as e:
 			raise AdjustError(f"Error while adjusting {transaction.as_dict()}") from e
@@ -49,6 +49,13 @@ class Serializer:
 	@staticmethod
 	def find_field_names(adjust_func: Callable) -> (str, str):
 		args_dict = inspect.signature(adjust_func).parameters
-		transaction_field = next(k for k, v in args_dict.items() if v.annotation == Transaction)
-		modifier_field = next(k for k, v in args_dict.items() if v.annotation == Modifier)
+		if len(args_dict) != 2:
+			raise SignatureError(f"function '{adjust_func.__name__}' needs to have exactly two parameters")
+		try:
+			transaction_field = next(k for k, v in args_dict.items() if v.annotation == Transaction)
+			modifier_field = next(k for k, v in args_dict.items() if v.annotation == Modifier)
+		except StopIteration:
+			field_iterator = iter(args_dict)
+			transaction_field = next(field_iterator)
+			modifier_field = next(field_iterator)
 		return transaction_field, modifier_field
