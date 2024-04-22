@@ -1,10 +1,8 @@
-import inspect
 from abc import abstractmethod, ABCMeta
 from dataclasses import dataclass
-from typing import List, Callable
+from typing import List
 
 from ynabtransactionadjuster.models import ModifiedTransaction
-from ynabtransactionadjuster.exceptions import SignatureError
 from ynabtransactionadjuster.models.credentials import Credentials
 from ynabtransactionadjuster.client import Client
 from ynabtransactionadjuster.models import Transaction
