@@ -20,7 +20,7 @@ class ModifiedTransaction(BaseModel):
 		return False
 
 	def __repr__(self) -> str:
-		return f"{self.__class__.__name__}(id={self.transaction.id}, modified_attributes={self.changed_attributes()}))"
+		return f"{self.__class__.__name__}(id='{self.transaction.id}', modified_attributes={self.changed_attributes()}))"
 
 	def as_dict(self) -> dict:
 		"""Returns a dictionary representation of the transaction which is used for the update call to YNAB"""
