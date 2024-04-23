@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from ynabtransactionadjuster.models import OriginalTransaction, Category, Payee
+from ynabtransactionadjuster.models import Transaction, Category, Payee
 
 
 @pytest.fixture
@@ -14,7 +14,7 @@ def mock_transaction_dict():
 
 
 def test_from_dict(mock_transaction_dict):
-	o = OriginalTransaction.from_dict(mock_transaction_dict)
+	o = Transaction.from_dict(mock_transaction_dict)
 	assert o.id == mock_transaction_dict['id']
 	assert o.amount == mock_transaction_dict['amount']
 	assert o.transaction_date == datetime.strptime(mock_transaction_dict['date'], '%Y-%m-%d').date()
@@ -38,7 +38,7 @@ def test_from_dict_category(mock_transaction_dict, name, cid, expected):
 	mock_transaction_dict['category_name'] = name
 	mock_transaction_dict['category_id'] = cid
 
-	o = OriginalTransaction.from_dict(mock_transaction_dict)
+	o = Transaction.from_dict(mock_transaction_dict)
 
 	assert o.category == expected
 
@@ -50,7 +50,7 @@ def test_from_dict_subtransactions(mock_transaction_dict):
 	mock_transaction_dict['subtransactions'] = [st, st]
 
 	# Act
-	o = OriginalTransaction.from_dict(mock_transaction_dict)
+	o = Transaction.from_dict(mock_transaction_dict)
 
 	# Assert
 	assert len(o.subtransactions) == 2

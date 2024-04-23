@@ -1,7 +1,8 @@
 # ynab-transaction-adjuster
 
 [![GitHub Release](https://img.shields.io/github/release/dnbasta/ynab-transaction-adjuster?style=flat)]() 
-[![Github Release](https://img.shields.io/maintenance/yes/2100)]()
+[![Maintained](https://img.shields.io/maintenance/yes/2100)]()
+[![Monthly downloads](https://img.shields.io/pypi/dm/ynab-transaction-adjuster)]()
 
 [!["Buy Me A Coffee"](https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/dnbasta)
 
@@ -27,46 +28,49 @@ A detailed documentation is available at https://ynab-transaction-adjuster.readt
 # Basic Usage
 
 ### Create an Adjuster
-Create a child class of `YnabTransactionAdjuster`.
-This class needs to implement a `filter()` and an `adjust()` method which contain the intended logic. The `filter()`
-method receives a list of `OriginalTransaction` objects which can be filtered before 
-adjustement. The `adjust()` method receives a singular `OriginalTransaction` and a 
-`TransactionModifier`. The latter is prefilled with values from the original transaction. 
-Its attributes can be modified, and it needs to be returned at the end of the function. 
-Please check the [detailed usage](https://ynab-transaction-adjuster.readthedocs.io/en/latest/detailed_usage/) section for explanations how to change different attributes.
+Create a child class of `Adjuster`. This class needs to implement a `filter()` and an `adjust()` method which contain 
+the intended logic. The `filter()` method receives a list of `Transaction` objects which can be filtered before 
+adjustement. The `adjust()` method receives a single `Transaction` and a `Modifier`.The latter is prefilled with values 
+from the original transaction and can be altered. The modifier needs to be returned at the end of the function. 
+Please check the [detailed usage](https://ynab-transaction-adjuster.readthedocs.io/en/latest/detailed_usage/) section 
+for explanations how to change different attributes.
+
 ```py
-from ynabtransactionadjuster import YnabTransactionAdjuster
-from ynabtransactionadjuster.models import OriginalTransaction, TransactionModifier
+from ynabtransactionadjuster import Adjuster, Transaction, Modifier
 
 
-class MyAdjuster(YnabTransactionAdjuster):
-    
-    def filter(self, transactions: List[OriginalTransaction]) -> List[OriginalTransaction]:
-        # your implementation
-        
-        # return the filtered list of transactions
-        return transactions
-        
-    def adjust(self, original: OriginalTransaction, modifier: TransactionModifier) -> TransactionModifier:
-        # your implementation
+class MyAdjuster(Adjuster):
+
+	def filter(self, transactions: List[Transaction]) -> List[Transaction]:
+		# your implementation
+
+		# return the filtered list of transactions
+		return transactions
+
+	def adjust(self, transaction: Transaction, modifier: Modifier) -> Modifier:
+		# your implementation
 
 		# return the altered modifier
 		return modifier
 ```
 
 ### Initialize
-Initalize the adjuster with `token`, `budget` and `account` from YNAB
+Create a [`Credentials`][models.Credentials] object and initialize Adjuster class with it
 ```py
-my_adjuster = MyAdjuster(token='<token>', budget='<budget>', account='<account>')
+from ynabtransactionadjuster import Credentials
+
+my_credentials = Credentials(token='<token>', budget='<budget>', account='<account>')
+my_adjuster = MyAdjuster.from_credentials(credentials=my_credentials)
 ```
 
 ### Test
-Test the adjuster on records fetched via the `test()`method. The method fetches and executes the 
-adjustments but doesn't write the results back to YNAB. Instead it returns a list of 
-the changed transactions which can be inspected for the changed properties.
+Test the adjuster on records fetched via the `dry_run()` method. It executes the adjustments but doesn't write the 
+results back to YNAB. Instead it returns a list of the changed transactions which can be inspected for the changed 
+properties. It takes an optional parameter `pretty_print` which, if set to `True`, prints modifications in an easy 
+readable string representation to the console.
 
 ```py
-mod_transactions = my_adjuster.test()
+mod_transactions = my_adjuster.dry_run()
 ```
 
 ### Run

@@ -2,13 +2,13 @@ from pydantic import BaseModel, model_validator
 from datetime import date
 from typing import List, Literal, Optional
 
-from ynabtransactionadjuster.models.category import Category
-from ynabtransactionadjuster.models.originaltransaction import OriginalTransaction
-from ynabtransactionadjuster.models.subtransaction import SubTransaction
-from ynabtransactionadjuster.models.payee import Payee
+from ynabtransactionadjuster.models import Category
+from ynabtransactionadjuster.models import Transaction
+from ynabtransactionadjuster.models import ModifierSubTransaction
+from ynabtransactionadjuster.models import Payee
 
 
-class TransactionModifier(BaseModel):
+class Modifier(BaseModel):
 	"""Transaction object prefilled with values from original transaction which can take modified values
 
 	:ivar category: The category of the transaction
@@ -26,19 +26,19 @@ class TransactionModifier(BaseModel):
 	memo: Optional[str]
 	payee: Payee
 	flag_color: Optional[Literal['red', 'green', 'blue', 'orange', 'purple', 'yellow']]
-	subtransactions: List[SubTransaction]
+	subtransactions: List[ModifierSubTransaction]
 	approved: bool
 	cleared: Literal['uncleared', 'cleared', 'reconciled']
 
 	@classmethod
-	def from_original_transaction(cls, original_transaction: OriginalTransaction):
-		return cls(transaction_date=original_transaction.transaction_date,
-				   category=original_transaction.category,
-				   payee=original_transaction.payee,
-				   memo=original_transaction.memo,
-				   flag_color=original_transaction.flag_color,
-				   approved=original_transaction.approved,
-				   cleared=original_transaction.cleared,
+	def from_transaction(cls, transaction: Transaction):
+		return cls(transaction_date=transaction.transaction_date,
+				   category=transaction.category,
+				   payee=transaction.payee,
+				   memo=transaction.memo,
+				   flag_color=transaction.flag_color,
+				   approved=transaction.approved,
+				   cleared=transaction.cleared,
 				   subtransactions=[])
 
 	@model_validator(mode='after')

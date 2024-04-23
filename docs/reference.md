@@ -1,7 +1,6 @@
 # Reference
 
-
-::: ynabtransactionadjuster.YnabTransactionAdjuster
+::: ynabtransactionadjuster.Adjuster
     options:
         merge_init_into_class: true
         show_root_full_path: false
@@ -12,11 +11,12 @@
 ::: repos.PayeeRepo
 
 ## Models
-
-::: models.OriginalTransaction
-::: models.OriginalSubTransaction
-::: models.TransactionModifier
+::: models.Credentials
+::: models.Transaction
 ::: models.SubTransaction
+::: models.Modifier
+::: models.ModifierSubTransaction
+::: models.ModifiedTransaction
 ::: models.Category
 ::: models.Payee
 

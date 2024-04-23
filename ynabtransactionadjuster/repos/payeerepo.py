@@ -5,8 +5,10 @@ from ynabtransactionadjuster.models import Payee
 
 
 class PayeeRepo:
-	"""Repository which holds all payees from your YNAB budget"""
+	"""Repository which holds all payees from your YNAB budget
 
+	:ivar _payees: List of payees in YNAB budget
+	"""
 	def __init__(self, payees: List[Payee]):
 		self._payees = payees
 
