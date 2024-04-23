@@ -55,7 +55,7 @@ class MyAdjuster(Adjuster):
 ```
 
 ### Initialize
-Create a [`Credentials`][models.Credentials] object and initialize Adjuster class with it
+Create a `Credentials` object and initialize Adjuster class with it
 ```py
 from ynabtransactionadjuster import Credentials
 
