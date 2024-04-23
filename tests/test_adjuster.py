@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from ynabtransactionadjuster import Adjuster
+from ynabtransactionadjuster import Adjuster, ModifiedTransaction
 
 
 class MockYnabTransactionAdjuster(Adjuster):
@@ -34,7 +34,8 @@ def test_dry_run(mock_category_repo, caplog, mock_original_transaction):
 
 	# Assert
 	assert len(r) == 1
-	assert r[0]['changes']['memo']['changed'] == memo
+	assert isinstance(r[0], ModifiedTransaction)
+	assert r[0].modifier.memo == memo
 
 
 @patch('ynabtransactionadjuster.adjuster.Client.update_transactions')

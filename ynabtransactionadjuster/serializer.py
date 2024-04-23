@@ -35,7 +35,7 @@ class Serializer:
 
 	def validate_category(self, category: Category):
 		if category:
-			self._adjuster.categories.fetch_by_id(category.id)
+			self._categories.fetch_by_id(category.id)
 
 	@staticmethod
 	def validate_attributes(modifier: Modifier):
