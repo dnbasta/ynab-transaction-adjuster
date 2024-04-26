@@ -2,6 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from requests import Response
 
+from ynabtransactionadjuster import Transaction
 from ynabtransactionadjuster.client import Client
 from ynabtransactionadjuster.models.payee import Payee
 
@@ -46,3 +47,16 @@ def test_fetch_payees(mock_get):
 	assert p_list[0].name == 'p_name'
 	assert p_list[0].id == 'p_id'
 	assert p_list[0].transfer_account_id == 't_id'
+
+
+@patch('ynabtransactionadjuster.client.requests.get')
+def test_fetch_transaction(mock_get, mock_transaction_dict):
+	# Arrange
+	resp = MagicMock(spec=Response)
+	resp.json.return_value = {'data': {'transaction': mock_transaction_dict}}
+	mock_get.return_value = resp
+	client = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock())
+
+	# Act
+	t = client.fetch_transaction('transaction_id')
+	assert isinstance(t, Transaction)

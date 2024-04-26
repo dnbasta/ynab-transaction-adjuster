@@ -75,7 +75,7 @@ class Adjuster(metaclass=ABCMeta):
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
-		self.check_signatures()
+		self._check_signatures()
 		filtered_transactions = self.filter(self.transactions)
 		s = Serializer(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
 		modified_transactions = s.run()
@@ -92,7 +92,7 @@ class Adjuster(metaclass=ABCMeta):
 		:raises AdjustError: if there is any error during the adjust process
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
-		self.check_signatures()
+		self._check_signatures()
 		filtered_transactions = self.filter(self.transactions)
 		s = Serializer(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
 		modified_transactions = s.run()
@@ -102,6 +102,14 @@ class Adjuster(metaclass=ABCMeta):
 			return updated
 		return 0
 
-	def check_signatures(self):
+	def _check_signatures(self):
 		SignatureChecker(func=self.filter, parent_func=Adjuster.filter).check()
 		SignatureChecker(func=self.adjust, parent_func=Adjuster.adjust).check()
+
+	def fetch_transaction(self, transaction_id: str) -> Transaction:
+		"""Fetches an individual transaction from the YNAB account
+
+		:param transaction_id: Transaction ID of the transaction to be fetched
+		"""
+		client = Client.from_credentials(credentials=self.credentials)
+		return client.fetch_transaction(transaction_id=transaction_id)

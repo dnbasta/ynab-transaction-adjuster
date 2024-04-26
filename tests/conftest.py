@@ -40,7 +40,8 @@ def mock_original_transaction(request):
 					   import_payee_name_original='ipno',
 					   transaction_date=date(2024, 1, 1),
 					   approved=False,
-					   cleared='uncleared')
+					   cleared='uncleared',
+					   transfer_transaction_id=None)
 
 
 @pytest.fixture
@@ -48,3 +49,11 @@ def mock_category_repo():
 	return CategoryRepo(categories=[
 		CategoryGroup(name='group1', categories=frozenset([Category(id='cid1', name='c_name')])),
 		CategoryGroup(name='group2', categories=frozenset([Category(id='cid2', name='c_name')]))])
+
+
+@pytest.fixture
+def mock_transaction_dict():
+	return dict(id='id', amount=1000, date='2024-01-01', category_name='category', category_id='categoryid',
+				payee_name='payee', payee_id='payeeid', flag_color=None, memo=None, subtransactions=[],
+				import_payee_name_original=None, import_payee_name=None, transfer_account_id='transfer_account_id',
+				approved=False, cleared='uncleared', transfer_transaction_id='transfer_transaction_id')
