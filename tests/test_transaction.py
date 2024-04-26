@@ -9,8 +9,8 @@ from ynabtransactionadjuster.models import Transaction, Category, Payee
 def mock_transaction_dict():
 	return dict(id='id', amount=1000, date='2024-01-01', category_name='category', category_id='categoryid',
 				payee_name='payee', payee_id='payeeid', flag_color=None, memo=None, subtransactions=[],
-				import_payee_name_original=None, import_payee_name=None, transfer_account_id=None,
-				approved=False, cleared='uncleared')
+				import_payee_name_original=None, import_payee_name=None, transfer_account_id='transfer_account_id',
+				approved=False, cleared='uncleared', transfer_transaction_id='transfer_transaction_id')
 
 
 def test_from_dict(mock_transaction_dict):
@@ -19,13 +19,15 @@ def test_from_dict(mock_transaction_dict):
 	assert o.amount == mock_transaction_dict['amount']
 	assert o.transaction_date == datetime.strptime(mock_transaction_dict['date'], '%Y-%m-%d').date()
 	assert o.category == Category(id=mock_transaction_dict['category_id'], name=mock_transaction_dict['category_name'])
-	assert o.payee == Payee(id=mock_transaction_dict['payee_id'], name=mock_transaction_dict['payee_name'])
+	assert o.payee == Payee(id=mock_transaction_dict['payee_id'], name=mock_transaction_dict['payee_name'],
+							transfer_account_id=mock_transaction_dict['transfer_account_id'])
 	assert o.flag_color == mock_transaction_dict['flag_color']
 	assert o.memo == mock_transaction_dict['memo']
 	assert o.import_payee_name_original == mock_transaction_dict['import_payee_name_original']
 	assert o.import_payee_name == mock_transaction_dict['import_payee_name']
 	assert o.approved == mock_transaction_dict['approved']
 	assert o.cleared == mock_transaction_dict['cleared']
+	assert o.transfer_transaction_id == mock_transaction_dict['transfer_transaction_id']
 	assert not o.subtransactions
 
 

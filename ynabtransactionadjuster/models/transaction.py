@@ -22,6 +22,7 @@ class Transaction:
 	:ivar import_payee_name_original: The original payee or memo as recorded by the bank
 	:ivar approved: approval status of the original transaction
 	:ivar cleared: clearance state of the original transaction
+	:ivar transfer_transaction_id: id of the originating transaction if transaction is transfer
 	"""
 	id: str
 	transaction_date: date
@@ -35,6 +36,7 @@ class Transaction:
 	subtransactions: Tuple[SubTransaction, ...]
 	cleared: Literal['uncleared', 'cleared', 'reconciled']
 	approved: bool
+	transfer_transaction_id: Optional[str]
 
 	@classmethod
 	def from_dict(cls, t_dict: dict) -> 'Transaction':
@@ -64,7 +66,8 @@ class Transaction:
 						   subtransactions=tuple([build_subtransaction(st) for st in t_dict['subtransactions']]),
 						   amount=t_dict['amount'],
 						   approved=t_dict['approved'],
-						   cleared=t_dict['cleared'])
+						   cleared=t_dict['cleared'],
+						   transfer_transaction_id=t_dict['transfer_transaction_id'])
 
 	def as_dict(self) -> dict:
 		return asdict(self)

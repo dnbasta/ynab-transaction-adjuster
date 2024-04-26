@@ -40,7 +40,8 @@ def mock_original_transaction(request):
 					   import_payee_name_original='ipno',
 					   transaction_date=date(2024, 1, 1),
 					   approved=False,
-					   cleared='uncleared')
+					   cleared='uncleared',
+					   transfer_transaction_id=None)
 
 
 @pytest.fixture
