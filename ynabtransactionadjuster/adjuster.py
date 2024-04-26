@@ -105,3 +105,11 @@ class Adjuster(metaclass=ABCMeta):
 	def _check_signatures(self):
 		SignatureChecker(func=self.filter, parent_func=Adjuster.filter).check()
 		SignatureChecker(func=self.adjust, parent_func=Adjuster.adjust).check()
+
+	def fetch_transaction(self, transaction_id: str) -> Transaction:
+		"""Fetches an individual transaction from the YNAB account
+
+		:param transaction_id: Transaction ID of the transaction to be fetched
+		"""
+		client = Client.from_credentials(credentials=self.credentials)
+		return client.fetch_transaction(transaction_id=transaction_id)

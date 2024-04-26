@@ -56,6 +56,11 @@ class Client:
 		transactions = [Transaction.from_dict(t) for t in transaction_dicts]
 		return transactions
 
+	def fetch_transaction(self, transaction_id: str) -> Transaction:
+		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/transactions/{transaction_id}', headers=self._header)
+		r.raise_for_status()
+		return Transaction.from_dict(r.json()['data']['transaction'])
+
 	def update_transactions(self, transactions: List[ModifiedTransaction]) -> int:
 		"""Updates transactions in YNAB. The updates are done in bulk.
 
