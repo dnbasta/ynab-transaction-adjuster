@@ -78,5 +78,23 @@ class MyAdjuster(Adjuster):
 
 		return modifier
 ```
+## Fetch originating transactions from transfers
+Transfer [`Transactions`][models.Transaction] have the original transaction linked via its id in the 
+`transfer_transaction_id` attribute. That attribute can be used to fetch the corresponding transaction with the 
+`fetch_transactions()` method in the adjuster
+```py
+from ynabtransactionadjuster import Adjuster, ModifierSubTransaction
 
+
+class MyAdjuster(Adjuster):
+
+    def filter(self, transactions):
+        return transactions
+    
+    def adjust(self, transaction, modifier):
+        originating_transaction = self.fetch_transaction(transaction.transfer_transaction_id)
+
+        # Do something
+        return modifier
+```
 
