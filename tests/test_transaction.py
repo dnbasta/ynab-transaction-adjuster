@@ -5,14 +5,6 @@ import pytest
 from ynabtransactionadjuster.models import Transaction, Category, Payee
 
 
-@pytest.fixture
-def mock_transaction_dict():
-	return dict(id='id', amount=1000, date='2024-01-01', category_name='category', category_id='categoryid',
-				payee_name='payee', payee_id='payeeid', flag_color=None, memo=None, subtransactions=[],
-				import_payee_name_original=None, import_payee_name=None, transfer_account_id='transfer_account_id',
-				approved=False, cleared='uncleared', transfer_transaction_id='transfer_transaction_id')
-
-
 def test_from_dict(mock_transaction_dict):
 	o = Transaction.from_dict(mock_transaction_dict)
 	assert o.id == mock_transaction_dict['id']
