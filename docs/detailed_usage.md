@@ -11,7 +11,7 @@ doesn't allow creating new categories and specifying a non-existing category wil
 from ynabtransactionadjuster import Adjuster
 
 
-class MyAdjusterFactory(Adjuster):
+class MyAdjuster(Adjuster):
 
 	def filter(self, transactions):
 		return transactions

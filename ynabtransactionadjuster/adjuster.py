@@ -1,5 +1,4 @@
 from abc import abstractmethod, ABCMeta
-from dataclasses import dataclass
 from typing import List
 
 from ynabtransactionadjuster.models import ModifiedTransaction
@@ -13,7 +12,6 @@ from ynabtransactionadjuster.serializer import Serializer
 from ynabtransactionadjuster.signaturechecker import SignatureChecker
 
 
-@dataclass
 class Adjuster(metaclass=ABCMeta):
 	"""Abstract class which modifies transactions according to concrete implementation. You need to create your own
 	child class and implement the `filter()`and `adjust()` method in it according to your needs. It has attributes
@@ -24,22 +22,37 @@ class Adjuster(metaclass=ABCMeta):
 	:ivar transactions: Transactions from YNAB Account
 	:ivar credentials: Credentials for YNAB API
 	"""
-	credentials: Credentials
-	categories: CategoryRepo
-	payees: PayeeRepo
-	transactions: List[Transaction]
+	def __init__(self, credentials: Credentials):
+		self.credentials = credentials
+		self._client = Client.from_credentials(self.credentials)
+		self._categories = None
+		self._payees = None
 
 	@classmethod
 	def from_credentials(cls, credentials: Credentials):
-		"""Instantiate a Adjuster class from a Credentials object
+		"""		.. warning:: DEPRECATED. Use standard __init__() constructor instead
 
-		:param credentials: Credentials to use for YNAB API
+		Classmethod which creates a new Adjuster instance from credentials
+
+		:param credentials: Credentials for YNAB API
 		"""
-		client = Client.from_credentials(credentials=credentials)
-		categories = CategoryRepo(client.fetch_categories())
-		payees = PayeeRepo(client.fetch_payees())
-		transactions = client.fetch_transactions()
-		return cls(categories=categories, payees=payees, transactions=transactions, credentials=credentials)
+		return cls(credentials)
+
+	@property
+	def categories(self) -> CategoryRepo:
+		if not self._categories:
+			self._categories = CategoryRepo(self._client.fetch_categories())
+		return self._categories
+
+	@property
+	def payees(self) -> PayeeRepo:
+		if not self._payees:
+			self._payees = PayeeRepo(self._client.fetch_payees())
+		return self._payees
+
+	@property
+	def transactions(self) -> List[Transaction]:
+		return self._client.fetch_transactions()
 
 	@abstractmethod
 	def filter(self, transactions: List[Transaction]) -> List[Transaction]:
@@ -97,8 +110,7 @@ class Adjuster(metaclass=ABCMeta):
 		s = Serializer(transactions=filtered_transactions, adjust_func=self.adjust, categories=self.categories)
 		modified_transactions = s.run()
 		if modified_transactions:
-			client = Client.from_credentials(credentials=self.credentials)
-			updated = client.update_transactions(modified_transactions)
+			updated = self._client.update_transactions(modified_transactions)
 			return updated
 		return 0
 
@@ -111,5 +123,4 @@ class Adjuster(metaclass=ABCMeta):
 
 		:param transaction_id: Transaction ID of the transaction to be fetched
 		"""
-		client = Client.from_credentials(credentials=self.credentials)
-		return client.fetch_transaction(transaction_id=transaction_id)
+		return self._client.fetch_transaction(transaction_id=transaction_id)

@@ -34,7 +34,7 @@ Create a [`Credentials`][models.Credentials] object and initialize Adjuster clas
 from ynabtransactionadjuster import Credentials
 
 my_credentials = Credentials(token='<token>', budget='<budget>', account='<account>')
-my_adjuster = MyAdjuster.from_credentials(credentials=my_credentials)
+my_adjuster = MyAdjuster(credentials=my_credentials)
 ```
 
 ### Test
