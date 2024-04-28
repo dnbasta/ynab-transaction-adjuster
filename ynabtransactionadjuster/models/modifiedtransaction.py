@@ -15,12 +15,12 @@ class ModifiedTransaction(BaseModel):
 
 		:returns: True if values from original transaction have been altered, False otherwise
 		"""
-		if self.changed_attributes():
+		if self.changed_attributes:
 			return True
 		return False
 
 	def __str__(self) -> str:
-		return f"{self.transaction} | {self.changed_attributes()}"
+		return f"{self.transaction} | {self.changed_attributes}"
 
 	def as_dict(self) -> dict:
 		"""Returns a dictionary representation of the transaction which is used for the update call to YNAB"""
@@ -41,6 +41,7 @@ class ModifiedTransaction(BaseModel):
 
 		return t_dict
 
+	@property
 	def changed_attributes(self) -> dict:
 		"""Returns a dictionary representation of the modified values and the original transaction"""
 		changed_attributes = dict()
