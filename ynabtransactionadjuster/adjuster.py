@@ -21,7 +21,7 @@ class Adjuster(metaclass=ABCMeta):
 
 	:ivar categories: Collection of current categories in YNAB budget
 	:ivar payees: Collection of current payees in YNAB budget
-	:ivar transactions: Transactions from YNAB Account
+	:ivar transactions: All current non deleted transactions from YNAB Account
 	:ivar credentials: Credentials for YNAB API
 	"""
 	def __init__(self, credentials: Credentials):
