@@ -34,23 +34,21 @@ Create a [`Credentials`][models.Credentials] object and initialize Adjuster clas
 from ynabtransactionadjuster import Credentials
 
 my_credentials = Credentials(token='<token>', budget='<budget>', account='<account>')
-my_adjuster = MyAdjuster(credentials=my_credentials)
+my_adjuster = MyAdjuster(my_credentials)
 ```
 
-### Test
-Test the adjuster on records fetched via the `dry_run()` method. It executes the adjustments but doesn't write the 
-results back to YNAB. Instead it returns a list of the changed transactions which can be inspected for the changed 
-properties. It takes an optional parameter `pretty_print` which, if set to `True`, prints modifications in an easy 
-readable string representation to the console.
-
+### Apply
+Apply the filter and adjust function on the fetched transactions from YNAB via the `apply()` method. It 
+returns a filtered list of the modified transactions which can be inspected for the changed properties. Only 
+actually changed transactions are returned.
 ```py
-mod_transactions = my_adjuster.dry_run()
+modified_transactions = my_adjuster.apply()
 ```
 
-### Run
-If you are satisfied with the functionality you can execute the adjuster with the `run()` method. This will run the 
-adjustments and will update the changed transactions in YNAB. The method returns an integer with the number of 
-successfully updated records.
+### Update
+The modified transactions can be upated in YNAB passing them to the `update()` function. The method returns an integer 
+with the number of successfully updated records.
 ```py
-count_of_updated_transactions = my_adjuster.run()
+modified_transactions = my_adjuster.apply()
+count_of_updated_transactions = my_adjuster.update(modified_transactions)
 ```
