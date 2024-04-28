@@ -30,3 +30,7 @@ nav:
   - 'basic_usage.md'
   - 'detailed_usage.md'
   - 'reference.md'
+
+markdown_extensions:
+- footnotes
+- admonition

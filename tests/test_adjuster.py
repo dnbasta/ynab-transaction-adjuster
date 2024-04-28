@@ -1,6 +1,4 @@
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import MagicMock, patch, PropertyMock
 
 from ynabtransactionadjuster import Adjuster, ModifiedTransaction
 
@@ -8,10 +6,7 @@ from ynabtransactionadjuster import Adjuster, ModifiedTransaction
 class MockYnabTransactionAdjuster(Adjuster):
 
 	def __init__(self, memo: str):
-		self.categories = None
-		self.payees = None
-		self.transactions = None
-		self.credentials = MagicMock()
+		super().__init__(MagicMock())
 		self.memo = memo
 
 	def filter(self, transactions):
@@ -22,15 +17,17 @@ class MockYnabTransactionAdjuster(Adjuster):
 		return modifier
 
 
-def test_dry_run(mock_category_repo, caplog, mock_original_transaction):
+@patch("ynabtransactionadjuster.Adjuster.categories", new_callable=PropertyMock)
+@patch("ynabtransactionadjuster.Adjuster.transactions", new_callable=PropertyMock)
+def test_apply(mock_transactions, mock_categories, mock_category_repo, caplog, mock_original_transaction):
 	# Arrange
 	memo = 'test'
 	my_adjuster = MockYnabTransactionAdjuster(memo=memo)
-	my_adjuster.transactions = [mock_original_transaction]
-	my_adjuster.categories = mock_category_repo
+	mock_transactions.return_value = [mock_original_transaction]
+	mock_categories.return_value = mock_category_repo
 
 	# Act
-	r = my_adjuster.dry_run()
+	r = my_adjuster.apply()
 
 	# Assert
 	assert len(r) == 1
@@ -39,23 +36,18 @@ def test_dry_run(mock_category_repo, caplog, mock_original_transaction):
 
 
 @patch('ynabtransactionadjuster.adjuster.Client.update_transactions')
-def test_run(mock_update, mock_category_repo, caplog, mock_original_transaction):
+def test_update(mock_update, mock_category_repo, caplog, mock_original_transaction):
 	# Arrange
 	my_adjuster = MockYnabTransactionAdjuster(memo='test')
-	my_adjuster.categories = mock_category_repo
-	my_adjuster.transactions = [mock_original_transaction]
 
-	c = my_adjuster.run()
+	my_adjuster.update(modified_transactions=[MagicMock(spec=ModifiedTransaction)])
 	mock_update.assert_called_once()
 
 
-@pytest.mark.parametrize('test_input', ['a', 'b'])
 @patch('ynabtransactionadjuster.adjuster.Client.update_transactions')
-def test_run_no_modified(mock_update, mock_category_repo, caplog, test_input, mock_original_transaction):
+def test_run_no_modified(mock_update, mock_category_repo, caplog, mock_original_transaction):
 	# Arrange
 	my_adjuster = MockYnabTransactionAdjuster(memo='memo')
-	my_adjuster.categories = mock_category_repo
-	my_adjuster.transactions = [mock_original_transaction] if test_input == 'a' else []
 
-	c = my_adjuster.run()
+	my_adjuster.update([])
 	mock_update.assert_not_called()

@@ -11,7 +11,7 @@ doesn't allow creating new categories and specifying a non-existing category wil
 from ynabtransactionadjuster import Adjuster
 
 
-class MyAdjusterFactory(Adjuster):
+class MyAdjuster(Adjuster):
 
 	def filter(self, transactions):
 		return transactions
@@ -78,5 +78,39 @@ class MyAdjuster(Adjuster):
 
 		return modifier
 ```
+## Fetch originating transaction from transfer
+Transfer [`Transactions`][models.Transaction] have the original transaction linked in the 
+`transfer_transaction_id` attribute. That attribute can be used to fetch the corresponding transaction with the 
+`fetch_transaction()` method in the adjuster.
+```py
+from ynabtransactionadjuster import Adjuster, ModifierSubTransaction
 
+
+class MyAdjuster(Adjuster):
+
+    def filter(self, transactions):
+        return transactions
+    
+    def adjust(self, transaction, modifier):
+        originating_transaction = self.fetch_transaction(transaction.transfer_transaction_id)
+
+        # Do something
+        return modifier
+```
+
+## Use additional attributes in Adjuster child class
+The `__init__()` constructor in the child class can be used to set additional attributes in the class. 
+```py
+from ynabtransactionadjuster import Adjuster, Credentials
+from typing import Any
+
+class MyAdjuster(Adjuster):
+    
+    def __init__(self, credentials: Credentials, my_attribute: Any):
+        # initialize base adjuster class
+        super().__init__(credentials=credentials)
+        
+        # set additional attributes
+        self.myattribute = my_attribute
+```
 
