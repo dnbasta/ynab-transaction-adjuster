@@ -98,3 +98,19 @@ class MyAdjuster(Adjuster):
         return modifier
 ```
 
+## Use additional attributes in Adjuster child class
+The `__init__()` constructor in the child class can be used to set additional attributes in the class. 
+```py
+from ynabtransactionadjuster import Adjuster, Credentials
+from typing import Any
+
+class MyAdjuster(Adjuster):
+    
+    def __init__(self, credentials: Credentials, my_attribute: Any):
+        # initialize base adjuster class
+        super().__init__(credentials=credentials)
+        
+        # set additional attributes
+        self.myattribute = my_attribute
+```
+
