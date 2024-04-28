@@ -39,8 +39,8 @@ my_adjuster = MyAdjuster(my_credentials)
 
 ### Apply
 Apply the filter and adjust function on the fetched transactions from YNAB via the `apply()` method. It 
-returns a filtered list of the modified transactions which can be inspected for the changed properties. Only 
-actually changed transactions are returned.
+returns a filtered list of [`ModifiedTransaction`][models.ModifiedTransaction] which can be inspected for the changed 
+properties via the `changed_attributes` attribute. Only actually changed transactions are returned. 
 ```py
 modified_transactions = my_adjuster.apply()
 ```
