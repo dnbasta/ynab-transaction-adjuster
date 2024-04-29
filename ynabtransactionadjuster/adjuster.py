@@ -44,6 +44,8 @@ class Adjuster(metaclass=ABCMeta):
 
 	@property
 	def transactions(self) -> List[Transaction]:
+		if self.credentials.account:
+			return self._client.fetch_transactions(account_id=self.credentials.account)
 		return self._client.fetch_transactions()
 
 	@abstractmethod

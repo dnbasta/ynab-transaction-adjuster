@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -7,8 +8,8 @@ class Credentials:
 
 	:ivar token: The YNAB token to use
 	:ivar budget: The YNAB budget id to use
-	:ivar account: The YNAB account id to use
+	:ivar account: Optionally the YNAB account id to use
 	"""
 	token: str
 	budget: str
-	account: str
+	account: Optional[str] = None

@@ -46,9 +46,13 @@ class Client:
 		payees = [Payee.from_dict(p) for p in data if p['deleted'] is False]
 		return payees
 
-	def fetch_transactions(self) -> List[Transaction]:
-		"""Fetches transactions from YNAB"""
-		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/accounts/{self._account}/transactions', headers=self._header)
+	def fetch_transactions(self, account_id: str = None) -> List[Transaction]:
+		"""Fetches transactions from YNAB
+
+		:param account_id: Optional YNAB account ID to fetch only for specific account
+		"""
+		account_part_url = f'accounts/{account_id}/' if account_id else ''
+		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/{account_part_url}transactions', headers=self._header)
 		r.raise_for_status()
 
 		data = r.json()['data']['transactions']
