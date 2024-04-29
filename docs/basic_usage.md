@@ -29,7 +29,8 @@ class MyAdjuster(Adjuster):
 ```
 
 ### Initialize
-Create a [`Credentials`][models.Credentials] object and initialize Adjuster class with it
+Create a [`Credentials`][models.Credentials] object and initialize Adjuster class with it. Providing `account` for the 
+credentials is optional. If not set the Adjuster will work on all transactions in the budget. 
 ```py
 from ynabtransactionadjuster import Credentials
 
