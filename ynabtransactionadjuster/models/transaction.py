@@ -2,6 +2,7 @@ from dataclasses import dataclass, asdict
 from datetime import date, datetime
 from typing import Literal, Optional, Tuple
 
+from ynabtransactionadjuster.models.account import Account
 from ynabtransactionadjuster.models.category import Category
 from ynabtransactionadjuster.models.payee import Payee
 from ynabtransactionadjuster.models.subtransaction import SubTransaction
@@ -11,7 +12,8 @@ from ynabtransactionadjuster.models.subtransaction import SubTransaction
 class Transaction:
 	"""Represents original transaction from YNAB
 
-	:ivar id: The original transaction id
+	:ivar id: The transaction id
+	:ivar account: The account of the transaction
 	:ivar amount: The transaction amount in milliunits format
 	:ivar category: The category of the original transaction
 	:ivar transaction_date: The date of the original transaction
@@ -25,6 +27,7 @@ class Transaction:
 	:ivar transfer_transaction_id: id of the originating transaction if transaction is transfer
 	"""
 	id: str
+	account: Account
 	transaction_date: date
 	category: Optional[Category]
 	amount: int
@@ -56,6 +59,7 @@ class Transaction:
 								  memo=s_dict['memo'])
 
 		return Transaction(id=t_dict['id'],
+						   account=Account(id=t_dict['account_id'], name=t_dict['account_name']),
 						   transaction_date=datetime.strptime(t_dict['date'], '%Y-%m-%d').date(),
 						   category=build_category(t_dict),
 						   memo=t_dict['memo'],
@@ -73,4 +77,4 @@ class Transaction:
 		return asdict(self)
 
 	def __str__(self) -> str:
-		return f"{self.transaction_date} | {self.payee.name} | {float(self.amount) / 1000:.2f} | {self.memo}"
+		return f"{self.account.name} | {self.transaction_date} | {self.payee.name} | {float(self.amount) / 1000:.2f} | {self.memo}"
