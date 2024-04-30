@@ -4,13 +4,6 @@
     options:
         merge_init_into_class: true
         show_root_full_path: false
-        members:
-            - filter
-            - adjust
-            - apply
-            - update
-            - fetch_transaction
-
 
 ## Repos
 

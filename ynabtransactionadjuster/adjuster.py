@@ -115,44 +115,4 @@ class Adjuster(metaclass=ABCMeta):
 		"""
 		return self._client.fetch_transaction(transaction_id=transaction_id)
 
-	@classmethod
-	@deprecated(version='1.2.0', reason='Use the standard constructor method MyAdjuster(credentials) instead.')
-	def from_credentials(cls, credentials: Credentials):
-		"""**Deprecated** Use the standard constructor method `MyAdjuster(credentials)` instead.
 
-		Classmethod which creates a new Adjuster instance from credentials
-
-		:param credentials: Credentials for YNAB APIx
-		"""
-		return cls(credentials)
-
-	@deprecated(version='1.2.0', reason='Use apply() function instead.')
-	def dry_run(self, pretty_print: bool = False) -> List[ModifiedTransaction]:
-		"""	**Deprecated** Use `apply()` function instead
-
-		Tests the filter & adjust methods of the adjuster.This function doesn't update records in YNAB.
-
-		:param pretty_print: if set to True will print modified transactions as strings in console
-
-		:return: List of modified transactions
-		:raises SignatureError: if signature of implemented adjuster functions is not compatible
-		:raises AdjustError: if there is any error during the adjust process
-		"""
-		modified_transactions = self.apply()
-		if pretty_print:
-			print('\n'.join(map(str, modified_transactions)))
-		return modified_transactions
-
-	@deprecated(version='1.2.0', reason='Use apply() and updated() function instead.')
-	def run(self) -> int:
-		"""**Deprecated** Use `apply()` and `update()` functions instead.
-
-		Run the adjuster. It will apply the filter & adjust methods and update the modified transactions in YNAB
-
-		:return: count of adjusted transactions which have been updated in YNAB
-		:raises SignatureError: if signature of implemented adjuster functions is not compatible
-		:raises AdjustError: if there is any error during the adjust process
-		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
-		"""
-		modified_transactions = self.apply()
-		return len(self.update(modified_transactions))
