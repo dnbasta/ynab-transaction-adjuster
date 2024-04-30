@@ -10,6 +10,7 @@ from ynabtransactionadjuster.models import Transaction
 from ynabtransactionadjuster.models import Modifier
 from ynabtransactionadjuster.repos import CategoryRepo
 from ynabtransactionadjuster.repos import PayeeRepo
+from ynabtransactionadjuster.repos.accountrepo import AccountRepo
 from ynabtransactionadjuster.serializer import Serializer
 from ynabtransactionadjuster.signaturechecker import SignatureChecker
 
@@ -21,6 +22,7 @@ class Adjuster(metaclass=ABCMeta):
 
 	:ivar categories: Collection of current categories in YNAB budget
 	:ivar payees: Collection of current payees in YNAB budget
+	:ivar accounts: Collection of current accounts in YNAB budget
 	:ivar transactions: All current non deleted transactions from YNAB Account
 	:ivar credentials: Credentials for YNAB API
 	"""
@@ -29,6 +31,7 @@ class Adjuster(metaclass=ABCMeta):
 		self._client = Client.from_credentials(self.credentials)
 		self._categories = None
 		self._payees = None
+		self._accounts = None
 
 	@property
 	def categories(self) -> CategoryRepo:
@@ -41,6 +44,12 @@ class Adjuster(metaclass=ABCMeta):
 		if not self._payees:
 			self._payees = PayeeRepo(self._client.fetch_payees())
 		return self._payees
+
+	@property
+	def accounts(self) -> AccountRepo:
+		if not self._accounts:
+			self._accounts = AccountRepo(self._client.fetch_accounts())
+		return self._accounts
 
 	@property
 	def transactions(self) -> List[Transaction]:
