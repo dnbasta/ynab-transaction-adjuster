@@ -3,6 +3,7 @@ from datetime import date
 import pytest
 
 from ynabtransactionadjuster.models import Transaction, Category, Payee, SubTransaction, ModifierSubTransaction, CategoryGroup
+from ynabtransactionadjuster.models.account import Account
 from ynabtransactionadjuster.repos import CategoryRepo
 
 
@@ -41,7 +42,8 @@ def mock_original_transaction(request):
 					   transaction_date=date(2024, 1, 1),
 					   approved=False,
 					   cleared='uncleared',
-					   transfer_transaction_id=None)
+					   transfer_transaction_id=None,
+					   account=Account(id='account_id', name='account_name'))
 
 
 @pytest.fixture
@@ -56,4 +58,5 @@ def mock_transaction_dict():
 	return dict(id='id', amount=1000, date='2024-01-01', category_name='category', category_id='categoryid',
 				payee_name='payee', payee_id='payeeid', flag_color=None, memo=None, subtransactions=[],
 				import_payee_name_original=None, import_payee_name=None, transfer_account_id='transfer_account_id',
-				approved=False, cleared='uncleared', transfer_transaction_id='transfer_transaction_id')
+				approved=False, cleared='uncleared', transfer_transaction_id='transfer_transaction_id',
+				account_id='account_id', account_name='account_name')

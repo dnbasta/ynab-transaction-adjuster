@@ -6,6 +6,7 @@ from requests import HTTPError
 from ynabtransactionadjuster.models import CategoryGroup, ModifiedTransaction
 from ynabtransactionadjuster.models import Transaction
 from ynabtransactionadjuster.models import Payee
+from ynabtransactionadjuster.models.account import Account
 from ynabtransactionadjuster.models.credentials import Credentials
 
 YNAB_BASE_URL = 'https://api.ynab.com/v1'
@@ -46,9 +47,22 @@ class Client:
 		payees = [Payee.from_dict(p) for p in data if p['deleted'] is False]
 		return payees
 
-	def fetch_transactions(self) -> List[Transaction]:
-		"""Fetches transactions from YNAB"""
-		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/accounts/{self._account}/transactions', headers=self._header)
+	def fetch_accounts(self) -> List[Account]:
+		"""Fetches accounts from YNAB"""
+		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/accounts', headers=self._header)
+		r.raise_for_status()
+
+		data = r.json()['data']['accounts']
+		accounts = [Account(name=a['name'], id=a['id']) for a in data if a['deleted'] is False]
+		return accounts
+
+	def fetch_transactions(self, account_id: str = None) -> List[Transaction]:
+		"""Fetches transactions from YNAB
+
+		:param account_id: Optional YNAB account ID to fetch only for specific account
+		"""
+		account_part_url = f'accounts/{account_id}/' if account_id else ''
+		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/{account_part_url}transactions', headers=self._header)
 		r.raise_for_status()
 
 		data = r.json()['data']['transactions']

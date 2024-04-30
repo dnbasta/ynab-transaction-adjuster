@@ -7,3 +7,4 @@ from .modifiersubtransaction import ModifierSubTransaction
 from .modifier import Modifier
 from .modifiedtransaction import ModifiedTransaction
 from .credentials import Credentials
+from .account import Account

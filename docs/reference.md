@@ -16,6 +16,7 @@
 
 ::: repos.CategoryRepo
 ::: repos.PayeeRepo
+::: repos.AccountRepo
 
 ## Models
 ::: models.Credentials
@@ -26,12 +27,14 @@
 ::: models.ModifiedTransaction
 ::: models.Category
 ::: models.Payee
+::: models.Account
 
 ## Exceptions
 ::: exceptions.AdjustError
 ::: exceptions.NoMatchingCategoryError
 ::: exceptions.MultipleMatchingCategoriesError
 ::: exceptions.NoMatchingPayeeError
+::: exceptions.NoMatchingAccountError
 ::: exceptions.ExistingSubTransactionError
 
 

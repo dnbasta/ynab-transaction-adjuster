@@ -6,6 +6,7 @@ from ynabtransactionadjuster.models import Category
 from ynabtransactionadjuster.models import Transaction
 from ynabtransactionadjuster.models import ModifierSubTransaction
 from ynabtransactionadjuster.models import Payee
+from ynabtransactionadjuster.models.account import Account
 
 
 class Modifier(BaseModel):
@@ -19,6 +20,7 @@ class Modifier(BaseModel):
 	:ivar subtransactions: The subtransactions of the transaction
 	:ivar cleared: Clearance status
 	:ivar approved: Approval status of the transaction
+	:ivar account: The account of the transaction
 	"""
 
 	transaction_date: date
@@ -29,6 +31,7 @@ class Modifier(BaseModel):
 	subtransactions: List[ModifierSubTransaction]
 	approved: bool
 	cleared: Literal['uncleared', 'cleared', 'reconciled']
+	account: Account
 
 	@classmethod
 	def from_transaction(cls, transaction: Transaction):
@@ -39,7 +42,8 @@ class Modifier(BaseModel):
 				   flag_color=transaction.flag_color,
 				   approved=transaction.approved,
 				   cleared=transaction.cleared,
-				   subtransactions=[])
+				   subtransactions=[],
+				   account=transaction.account)
 
 	@model_validator(mode='after')
 	def check_values(self):

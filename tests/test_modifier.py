@@ -4,6 +4,7 @@ import pytest
 from pydantic import ValidationError
 
 from ynabtransactionadjuster.models import Modifier, Payee, Category, ModifierSubTransaction
+from ynabtransactionadjuster.models.account import Account
 
 
 @pytest.fixture
@@ -15,7 +16,8 @@ def mock_modifier(request):
 					subtransactions=[],
 					transaction_date=date(2024, 1, 1),
 					cleared='uncleared',
-					approved=False)
+					approved=False,
+					account=Account(name='account_name', id='account_id'),)
 
 
 @pytest.fixture

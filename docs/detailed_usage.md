@@ -53,6 +53,29 @@ class MyAdjuster(Adjuster):
 		return modifier
 ```
 
+## Move transaction to other account
+The transaction can be moved from one account to another by changing the `account` property of the 
+[`Modifier`][models.Modifier]. An [`Account`][models.Account] can be fetched via the `self.accounts` property in the 
+Adjuster class. The [`AccountRepo`][repos.AccountRepo] can be called with either `fetch_by_name()` or `fetch_by_id()` 
+method. It can also be called with `fetch_all()`to get all accounts.
+
+```py
+from ynabtransactionadjuster import Adjuster
+
+class MyAdjuster(Adjuster):
+
+	def filter(self, transactions):
+		return transactions
+
+	def adjust(self, transaction, modifier):
+		account = self.accounts.fetch_by_name('My account')
+		# or 
+		account = self.accounts.fetch_by_id('account_id')
+		modifier.account = account
+
+		return modifier
+```
+
 ## Split the transaction
 The transaction can be split if the original transaction is not already a split (YNAB doesn't allow updating splits 
 of an existing split transaction). Splits can be created by using [`ModifierSubTransaction`][models.ModifierSubTransaction] 

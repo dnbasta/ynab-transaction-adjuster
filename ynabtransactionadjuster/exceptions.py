@@ -29,3 +29,7 @@ class AdjustError(Exception):
 
 class SignatureError(Exception):
 	""" Raised when function is not defined with right signature"""
+
+
+class NoMatchingAccountError(Exception):
+	"""Raised when no matching account is found in the specified budget"""

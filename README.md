@@ -55,7 +55,8 @@ class MyAdjuster(Adjuster):
 ```
 
 ### Initialize
-Create a `Credentials` object and initialize Adjuster class with it
+Create a `Credentials` object and initialize Adjuster class with it. Providing `account` for the credentials is 
+optional. If not set the Adjuster will work on all transactions in the budget.  
 ```py
 from ynabtransactionadjuster import Credentials
 
@@ -75,6 +76,5 @@ modified_transactions = my_adjuster.apply()
 The modified transactions can be upated in YNAB passing them to the `update()` function. The method returns an integer 
 with the number of successfully updated records.
 ```py
-modified_transactions = my_adjuster.apply()
 count_of_updated_transactions = my_adjuster.update(modified_transactions)
 ```
