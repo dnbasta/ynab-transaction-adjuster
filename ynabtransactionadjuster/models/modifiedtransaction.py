@@ -29,7 +29,8 @@ class ModifiedTransaction(BaseModel):
 					  payee_id=self.modifier.payee.id,
 					  date=datetime.strftime(self.modifier.transaction_date, '%Y-%m-%d'),
 					  approved=self.modifier.approved,
-					  cleared=self.modifier.cleared)
+					  cleared=self.modifier.cleared,
+					  account_id=self.modifier.account.id)
 		if len(self.modifier.subtransactions) > 0:
 			t_dict['subtransactions'] = [s.as_dict() for s in self.modifier.subtransactions]
 		if self.modifier.category:
@@ -46,7 +47,7 @@ class ModifiedTransaction(BaseModel):
 		"""Returns a dictionary representation of the modified values and the original transaction"""
 		changed_attributes = dict()
 
-		for a in ('payee', 'category', 'flag_color', 'memo', 'approved', 'cleared'):
+		for a in ('payee', 'category', 'flag_color', 'memo', 'approved', 'cleared', 'account'):
 			if self._attribute_changed(a):
 				changed_attributes[a] = self._create_changed_dict(a)
 

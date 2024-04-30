@@ -4,6 +4,7 @@ import pytest
 from pydantic import ValidationError
 
 from ynabtransactionadjuster.models import Category, Payee, Modifier, ModifiedTransaction
+from ynabtransactionadjuster.models.account import Account
 
 
 @pytest.mark.parametrize('test_attribute, test_input', [
@@ -13,7 +14,8 @@ from ynabtransactionadjuster.models import Category, Payee, Modifier, ModifiedTr
 	('payee', Payee(id='p_id1', name='p_name1', transfer_account_id='t_id1')),
 	('flag_color', 'blue'),
 	('approved', True),
-	('cleared', 'cleared')])
+	('cleared', 'cleared'),
+	('account', Account('account_name1', 'account_id1'))])
 def test_is_changed_true(test_attribute, test_input, mock_original_transaction):
 	# Arrange
 	mock_modifier = Modifier.from_transaction(mock_original_transaction)
