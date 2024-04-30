@@ -75,7 +75,7 @@ class Client:
 		r.raise_for_status()
 		return Transaction.from_dict(r.json()['data']['transaction'])
 
-	def update_transactions(self, transactions: List[ModifiedTransaction]) -> int:
+	def update_transactions(self, transactions: List[ModifiedTransaction]) -> List[Transaction]:
 		"""Updates transactions in YNAB. The updates are done in bulk.
 
 		:param transactions: list of modified transactions to be updated
@@ -90,5 +90,6 @@ class Client:
 			r.raise_for_status()
 		except HTTPError as e:
 			raise HTTPError(r.text, update_dict)
-		r_dict = r.json()['data']['transaction_ids']
-		return len(r_dict)
+		r_dict = r.json()['data']
+		updated_transactions = [Transaction.from_dict(t) for t in r_dict['transactions'] if t['id'] in [t.transaction.id for t in transactions]]
+		return updated_transactions
