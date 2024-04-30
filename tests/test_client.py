@@ -4,6 +4,7 @@ from requests import Response
 
 from ynabtransactionadjuster import Transaction
 from ynabtransactionadjuster.client import Client
+from ynabtransactionadjuster.models.account import Account
 from ynabtransactionadjuster.models.payee import Payee
 
 
@@ -60,3 +61,22 @@ def test_fetch_transaction(mock_get, mock_transaction_dict):
 	# Act
 	t = client.fetch_transaction('transaction_id')
 	assert isinstance(t, Transaction)
+
+
+@patch('ynabtransactionadjuster.client.requests.get')
+def test_fetch_accounts(mock_get):
+	# Arrange
+	resp = MagicMock(spec=Response)
+	resp.json.return_value = {'data': {'accounts': [dict(name='account_name', id='account_id', deleted=False),
+											dict(name='account_name2', id='account_id2', deleted=True)]}}
+	mock_get.return_value = resp
+	client = Client.from_credentials(MagicMock())
+
+	# Act
+	a = client.fetch_accounts()
+
+	# Assert
+	assert len(a) == 1
+	assert isinstance(a[0], Account)
+	assert a[0].name == 'account_name'
+	assert a[0].id == 'account_id'
