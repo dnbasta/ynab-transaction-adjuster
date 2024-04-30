@@ -40,7 +40,7 @@ def test_from_dict_category(mock_transaction_dict, name, cid, expected):
 def test_from_dict_subtransactions(mock_transaction_dict):
 	# Arrange
 	st = dict(amount=500, memo='memo', category_name='category', category_id='categoryid', payee_name='payee',
-			   payee_id='payeeid', transfer_account_id='transferid')
+			   payee_id='payeeid', transfer_account_id='transferid', transfer_transaction_id='transfer_transaction_id')
 	mock_transaction_dict['subtransactions'] = [st, st]
 
 	# Act

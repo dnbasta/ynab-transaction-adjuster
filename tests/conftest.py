@@ -24,7 +24,8 @@ def mock_original_transaction(request):
 		if request.param == 'subtransactions':
 			st = SubTransaction(memo='memo1', amount=500,
 								category=Category(name='cname', id='cid'),
-								payee=Payee(name='pname'))
+								payee=Payee(name='pname'),
+								transfer_transaction_id='transfer_transaction_id')
 			subs = (st, st)
 		if request.param == 'optional_none':
 			memo = None

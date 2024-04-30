@@ -56,7 +56,8 @@ class Transaction:
 			return SubTransaction(payee=build_payee(s_dict),
 								  category=build_category(s_dict),
 								  amount=s_dict['amount'],
-								  memo=s_dict['memo'])
+								  memo=s_dict['memo'],
+								  transfer_transaction_id=s_dict['transfer_transaction_id'])
 
 		return Transaction(id=t_dict['id'],
 						   account=Account(id=t_dict['account_id'], name=t_dict['account_name']),

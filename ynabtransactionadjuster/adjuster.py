@@ -92,17 +92,17 @@ class Adjuster(metaclass=ABCMeta):
 		modified_transactions = s.run()
 		return modified_transactions
 
-	def update(self, modified_transactions: List[ModifiedTransaction]) -> int:
+	def update(self, modified_transactions: List[ModifiedTransaction]) -> List[Transaction]:
 		"""Updates the modified transactions in YNAB
 
 		:param modified_transactions: List of modified transactions to be updated in YNAB
-		:return: count of adjusted transactions which have been updated in YNAB
+		:return: list of modified transactions
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
 		if modified_transactions:
 			updated = self._client.update_transactions(modified_transactions)
 			return updated
-		return 0
+		return list()
 
 	def _check_signatures(self):
 		SignatureChecker(func=self.filter, parent_func=Adjuster.filter).check()
@@ -155,4 +155,4 @@ class Adjuster(metaclass=ABCMeta):
 		:raises HTTPError: if there is any error with the YNAB API (e.g. wrong credentials)
 		"""
 		modified_transactions = self.apply()
-		return self.update(modified_transactions)
+		return len(self.update(modified_transactions))
