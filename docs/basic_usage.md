@@ -50,6 +50,5 @@ modified_transactions = my_adjuster.apply()
 The modified transactions can be upated in YNAB passing them to the `update()` function. The method returns an integer 
 with the number of successfully updated records.
 ```py
-modified_transactions = my_adjuster.apply()
 count_of_updated_transactions = my_adjuster.update(modified_transactions)
 ```
