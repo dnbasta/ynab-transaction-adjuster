@@ -21,7 +21,7 @@ class Adjuster(metaclass=ABCMeta):
 	which allow you to lookup categories and payees from your budget.
 
 	:param credentials: Credentials for YNAB API
-	:param session: optional requests Session object to be used for connections
+	:param session: optional requests Session object to be used for connections (default: None)
 	:ivar categories: Collection of current categories in YNAB budget
 	:ivar payees: Collection of current payees in YNAB budget
 	:ivar accounts: Collection of current accounts in YNAB budget
