@@ -1,7 +1,6 @@
 from typing import List
 
-import requests
-from requests import HTTPError
+from requests import HTTPError, Session
 
 from ynabtransactionadjuster.models import CategoryGroup, ModifiedTransaction
 from ynabtransactionadjuster.models import Transaction
@@ -18,10 +17,12 @@ class Client:
 	:param token: YNAB API token
 	:param budget: YNAB budget ID
 	:param account: YNAB account ID
+	:ivar session: requests session with YNAB API token in headers
 	"""
 
 	def __init__(self, token: str, budget: str, account: str):
-		self._header = {'Authorization': f'Bearer {token}'}
+		self.session = Session()
+		self.session.headers.update({'Authorization': f'Bearer {token}'})
 		self._budget = budget
 		self._account = account
 
@@ -31,7 +32,7 @@ class Client:
 
 	def fetch_categories(self) -> List[CategoryGroup]:
 		"""Fetches categories from YNAB"""
-		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/categories', headers=self._header)
+		r = self.session.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/categories')
 		r.raise_for_status()
 
 		data = r.json()['data']['category_groups']
@@ -40,7 +41,7 @@ class Client:
 
 	def fetch_payees(self) -> List[Payee]:
 		"""Fetches payees from YNAB"""
-		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/payees', headers=self._header)
+		r = self.session.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/payees')
 		r.raise_for_status()
 
 		data = r.json()['data']['payees']
@@ -49,7 +50,7 @@ class Client:
 
 	def fetch_accounts(self) -> List[Account]:
 		"""Fetches accounts from YNAB"""
-		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/accounts', headers=self._header)
+		r = self.session.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/accounts')
 		r.raise_for_status()
 
 		data = r.json()['data']['accounts']
@@ -62,7 +63,7 @@ class Client:
 		:param account_id: Optional YNAB account ID to fetch only for specific account
 		"""
 		account_part_url = f'accounts/{account_id}/' if account_id else ''
-		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/{account_part_url}transactions', headers=self._header)
+		r = self.session.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/{account_part_url}transactions')
 		r.raise_for_status()
 
 		data = r.json()['data']['transactions']
@@ -71,7 +72,7 @@ class Client:
 		return transactions
 
 	def fetch_transaction(self, transaction_id: str) -> Transaction:
-		r = requests.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/transactions/{transaction_id}', headers=self._header)
+		r = self.session.get(f'{YNAB_BASE_URL}/budgets/{self._budget}/transactions/{transaction_id}')
 		r.raise_for_status()
 		return Transaction.from_dict(r.json()['data']['transaction'])
 
@@ -83,9 +84,7 @@ class Client:
 		of transactions
 		"""
 		update_dict = {'transactions': [r.as_dict() for r in transactions]}
-		r = requests.patch(f'{YNAB_BASE_URL}/budgets/{self._budget}/transactions',
-						   json=update_dict,
-						   headers=self._header)
+		r = self.session.patch(f'{YNAB_BASE_URL}/budgets/{self._budget}/transactions', json=update_dict)
 		try:
 			r.raise_for_status()
 		except HTTPError as e:

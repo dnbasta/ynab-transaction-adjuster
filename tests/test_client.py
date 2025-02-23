@@ -1,26 +1,34 @@
 from unittest.mock import MagicMock, patch
 
-from requests import Response
+from requests import Response, Session
 
 from ynabtransactionadjuster import Transaction
 from ynabtransactionadjuster.client import Client
 from ynabtransactionadjuster.models.account import Account
 from ynabtransactionadjuster.models.payee import Payee
 
+def create_mock_session(res: dict) -> MagicMock:
+	mock_session = MagicMock(spec=Session)
+	mock_response = MagicMock(spec=Response)
+	mock_response.json.return_value = res
+	mock_session.get.return_value = mock_response
+	return mock_session
 
-@patch('ynabtransactionadjuster.client.requests.get')
-def test_fetch_categories(get_patch):
+
+def test_fetch_categories():
 	# Arrange
-	resp = MagicMock(spec=Response)
-	resp.json.return_value = {'data': {'category_groups': [
-		{'id': 'cg_id', 'name': 'cg_name', 'deleted': False, 'categories': [{'id': 'c_id', 'name': 'c_name', 'deleted': False},
-																			{'id': 'c_id', 'name': 'c_name', 'deleted': True}]},
-		{'id': 'cg_id2', 'name': 'cg_name2', 'deleted': True, 'categories': [{'id': 'c_id', 'name': 'c_name', 'deleted': False}]}
+	c = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock())
+	resp = {'data': {'category_groups': [
+		{'id': 'cg_id', 'name': 'cg_name', 'deleted': False,
+		 'categories': [{'id': 'c_id', 'name': 'c_name', 'deleted': False},
+						{'id': 'c_id', 'name': 'c_name', 'deleted': True}]},
+		{'id': 'cg_id2', 'name': 'cg_name2', 'deleted': True,
+		 'categories': [{'id': 'c_id', 'name': 'c_name', 'deleted': False}]}
 	]}}
-	get_patch.return_value = resp
+	c.session = create_mock_session(resp)
 
 	# Act
-	c = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock())
+
 	cats = c.fetch_categories()
 
 	# Assert
@@ -30,16 +38,15 @@ def test_fetch_categories(get_patch):
 	assert list(cats[0].categories)[0].id == 'c_id'
 
 
-@patch('ynabtransactionadjuster.client.requests.get')
-def test_fetch_payees(mock_get):
+def test_fetch_payees():
 	# Arrange
-	resp = MagicMock(spec=Response)
-	resp.json.return_value = {'data': {'payees': [{
+	c = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock())
+	resp = {'data': {'payees': [{
 		'id': 'p_id', 'name': 'p_name', 'deleted': False, 'transfer_account_id': 't_id'}]}}
-	mock_get.return_value = resp
+	c.session = create_mock_session(resp)
 
 	# Act
-	c = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock())
+
 	p_list = c.fetch_payees()
 
 	# Assert
@@ -50,27 +57,23 @@ def test_fetch_payees(mock_get):
 	assert p_list[0].transfer_account_id == 't_id'
 
 
-@patch('ynabtransactionadjuster.client.requests.get')
-def test_fetch_transaction(mock_get, mock_transaction_dict):
+def test_fetch_transaction(mock_transaction_dict):
 	# Arrange
-	resp = MagicMock(spec=Response)
-	resp.json.return_value = {'data': {'transaction': mock_transaction_dict}}
-	mock_get.return_value = resp
 	client = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock())
+	resp = {'data': {'transaction': mock_transaction_dict}}
+	client.session = create_mock_session(resp)
 
 	# Act
 	t = client.fetch_transaction('transaction_id')
 	assert isinstance(t, Transaction)
 
 
-@patch('ynabtransactionadjuster.client.requests.get')
-def test_fetch_accounts(mock_get):
+def test_fetch_accounts():
 	# Arrange
-	resp = MagicMock(spec=Response)
-	resp.json.return_value = {'data': {'accounts': [dict(name='account_name', id='account_id', deleted=False),
-											dict(name='account_name2', id='account_id2', deleted=True)]}}
-	mock_get.return_value = resp
 	client = Client.from_credentials(MagicMock())
+	resp = {'data': {'accounts': [dict(name='account_name', id='account_id', deleted=False),
+											dict(name='account_name2', id='account_id2', deleted=True)]}}
+	client.session = create_mock_session(resp)
 
 	# Act
 	a = client.fetch_accounts()
