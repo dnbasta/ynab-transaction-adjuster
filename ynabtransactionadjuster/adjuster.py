@@ -1,7 +1,7 @@
 
 from abc import abstractmethod, ABCMeta
 from typing import List
-from deprecated import deprecated
+from requests import Session
 
 from ynabtransactionadjuster.models import ModifiedTransaction
 from ynabtransactionadjuster.models.credentials import Credentials
@@ -20,15 +20,19 @@ class Adjuster(metaclass=ABCMeta):
 	child class and implement the `filter()`and `adjust()` method in it according to your needs. It has attributes
 	which allow you to lookup categories and payees from your budget.
 
+	:param credentials: Credentials for YNAB API
+	:param session: optional requests Session object to be used for connections
 	:ivar categories: Collection of current categories in YNAB budget
 	:ivar payees: Collection of current payees in YNAB budget
 	:ivar accounts: Collection of current accounts in YNAB budget
 	:ivar transactions: All current non deleted transactions from YNAB Account
 	:ivar credentials: Credentials for YNAB API
 	"""
-	def __init__(self, credentials: Credentials):
+	def __init__(self, credentials: Credentials, session: Session = None):
 		self.credentials = credentials
-		self._client = Client.from_credentials(self.credentials)
+		if not session:
+			session = Session()
+		self._client = Client.from_credentials(credentials=self.credentials, session=session)
 		self._categories = None
 		self._payees = None
 		self._accounts = None

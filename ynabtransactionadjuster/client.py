@@ -17,18 +17,18 @@ class Client:
 	:param token: YNAB API token
 	:param budget: YNAB budget ID
 	:param account: YNAB account ID
-	:ivar session: requests session with YNAB API token in headers
+	:param session: requests session with YNAB API token in headers
 	"""
 
-	def __init__(self, token: str, budget: str, account: str):
-		self.session = Session()
+	def __init__(self, token: str, budget: str, account: str, session: Session):
+		self.session = session
 		self.session.headers.update({'Authorization': f'Bearer {token}'})
 		self._budget = budget
 		self._account = account
 
 	@classmethod
-	def from_credentials(cls, credentials: Credentials):
-		return cls(token=credentials.token, budget=credentials.budget, account=credentials.account)
+	def from_credentials(cls, credentials: Credentials, session: Session):
+		return cls(token=credentials.token, budget=credentials.budget, account=credentials.account, session=session)
 
 	def fetch_categories(self) -> List[CategoryGroup]:
 		"""Fetches categories from YNAB"""

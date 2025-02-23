@@ -9,6 +9,7 @@ from ynabtransactionadjuster.models.payee import Payee
 
 def create_mock_session(res: dict) -> MagicMock:
 	mock_session = MagicMock(spec=Session)
+	mock_session.headers = MagicMock()
 	mock_response = MagicMock(spec=Response)
 	mock_response.json.return_value = res
 	mock_session.get.return_value = mock_response
@@ -17,7 +18,6 @@ def create_mock_session(res: dict) -> MagicMock:
 
 def test_fetch_categories():
 	# Arrange
-	c = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock())
 	resp = {'data': {'category_groups': [
 		{'id': 'cg_id', 'name': 'cg_name', 'deleted': False,
 		 'categories': [{'id': 'c_id', 'name': 'c_name', 'deleted': False},
@@ -25,8 +25,7 @@ def test_fetch_categories():
 		{'id': 'cg_id2', 'name': 'cg_name2', 'deleted': True,
 		 'categories': [{'id': 'c_id', 'name': 'c_name', 'deleted': False}]}
 	]}}
-	c.session = create_mock_session(resp)
-
+	c = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock(), session=create_mock_session(resp))
 	# Act
 
 	cats = c.fetch_categories()
@@ -40,10 +39,9 @@ def test_fetch_categories():
 
 def test_fetch_payees():
 	# Arrange
-	c = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock())
 	resp = {'data': {'payees': [{
 		'id': 'p_id', 'name': 'p_name', 'deleted': False, 'transfer_account_id': 't_id'}]}}
-	c.session = create_mock_session(resp)
+	c = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock(), session=create_mock_session(resp))
 
 	# Act
 
@@ -59,9 +57,8 @@ def test_fetch_payees():
 
 def test_fetch_transaction(mock_transaction_dict):
 	# Arrange
-	client = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock())
 	resp = {'data': {'transaction': mock_transaction_dict}}
-	client.session = create_mock_session(resp)
+	client = Client(token=MagicMock(), budget=MagicMock(), account=MagicMock(), session=create_mock_session(resp))
 
 	# Act
 	t = client.fetch_transaction('transaction_id')
@@ -70,10 +67,9 @@ def test_fetch_transaction(mock_transaction_dict):
 
 def test_fetch_accounts():
 	# Arrange
-	client = Client.from_credentials(MagicMock())
 	resp = {'data': {'accounts': [dict(name='account_name', id='account_id', deleted=False),
 											dict(name='account_name2', id='account_id2', deleted=True)]}}
-	client.session = create_mock_session(resp)
+	client = Client.from_credentials(credentials=MagicMock(), session=create_mock_session(resp))
 
 	# Act
 	a = client.fetch_accounts()
